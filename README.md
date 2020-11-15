@@ -1,9 +1,17 @@
 # RNA-seq tutorial
 
 We will use the workflow manager [snakemake](https://snakemake.readthedocs.io/en/stable/index.html) to develop
-a RNAseq pipeline. To get started, please install the required software packages before the lectures.
+a RNAseq pipeline. One big part of developing successful pipelines is making them reproducible and transferable,
+i.e. we should get the same results using the pipeline on the same data, irrespective of which compute/system we
+analysed them on. To achieve this, we will work with contained software environments, using `conda` (which you
+should all have installed already when you installed [Anaconda](https://www.anaconda.com/products/individual).
+
+To get started, please install the required software packages before the lectures.
 The set-up is described below. If you run into issues with the installation, please let me know BEFORE the
 first session, so we can resolve any problems before the lectures. 
+
+(Don't worry if the setup does not make sense to you, or if you are not familiar with the commands yet; we will
+cover it all in the lectures)
 
 ## Set-up
 **1. Create a conda environment for the tutorial.**
@@ -11,12 +19,36 @@ first session, so we can resolve any problems before the lectures.
 - Type the following command:
 
 ```bash
-conda create -c conda-forge -c bioconda -n snakemake snakemake-rnaseq
+conda create -c conda-forge -c bioconda -n snakemake-rnaseq snakemake
 ```
-- activate the snakemake environment with 
+NB: this might take a while. Initially you should see:
+```bash
+Collecting package metadata (current_repodata.json): done
+Solving environment: done
+```
+At some point it will ask you `Proceed ([y]/n)?`. Type `y` and hit enter.
+
+If it successfully finishes, you will see this on your screen:
+```bash
+# To activate this environment, use
+#
+#     $ conda activate snakemake-rnaseq
+#
+# To deactivate an active environment, use
+#
+#     $ conda deactivate
+```
+
+**2. activate the snakemake environment** 
+- type the following to activate the environment
 ```bash
 conda activate snakemake-rnaseq
 ```
+- test the environment by typing
+```bash
+snakemake --version
+```
+You should see: `5.28.0`
 
 **2. Save rnaseq-tutorial.zip**
 - unzip
