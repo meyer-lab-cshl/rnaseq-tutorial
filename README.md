@@ -6,7 +6,7 @@ The set-up is described below. If you run into issues with the installation, ple
 first session, so we can resolve any problems before the lectures. 
 
 ## Set-up
-1. Create a conda environment for the tutorial.
+**1. Create a conda environment for the tutorial.**
 - Open your terminal app (aka commad line, shell)
 - Type the following command:
 
@@ -18,12 +18,12 @@ conda create -c conda-forge -c bioconda -n snakemake snakemake-rnaseq
 conda activate snakemake-rnaseq
 ```
 
-2. Save rnaseq-tutorial.zip
+**2. Save rnaseq-tutorial.zip**
 - unzip
 - move into the directory using the command line `cd /path/2/rnaseq-tutorial`
   (where `path/2/` is the path to the directory where you saved the folder)
 
-3. Test the setup
+**3. Test the setup**
 - type: `snakemake --use-conda --cores 1`
 - hit enter
 - you should see something like this on your screen:
