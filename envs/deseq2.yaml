@@ -1,0 +1,11 @@
+channels:
+  - conda-forge/label/gcc7
+  - bioconda/label/gcc7
+dependencies:
+  - r-base
+  - r-tidyverse
+  - r-cowplot
+  - r-svglite
+  - bioconductor-deseq2
+  - bioconductor-biomart
+  - bioconductor-apeglm
