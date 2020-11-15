@@ -50,9 +50,8 @@ snakemake --version
 ```
 You should see: `5.28.0`
 
-**2. Save rnaseq-tutorial.zip**
-- unzip
-- move into the directory using the command line `cd /path/2/rnaseq-tutorial`
+**2. Move into the rnaseq-tutorial directory**
+- enter the directory using the command line `cd /path/2/rnaseq-tutorial`
   (where `path/2/` is the path to the directory where you saved the folder)
 
 **3. Test the setup**
