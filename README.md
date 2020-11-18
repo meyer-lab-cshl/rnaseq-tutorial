@@ -96,9 +96,3 @@ ERROR: activate_clangxx_osx-64.sh failed, see above for details
 ## Analysis
 
 ## Results
-<<<<<<< HEAD
-
-
-=======
- 
->>>>>>> f2f57b2e81751824aea723b5e1123ec5c24d492a
