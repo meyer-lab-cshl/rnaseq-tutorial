@@ -1,3 +1,17 @@
+import pandas as pd
+
+def get_fastq(wildcards):
+    return samples.loc[(wildcards.sample, wildcards.unit), ["fq1", "fq2"]].dropna()
+
+
+# parameters
+samplesfile = "samples.txt"
+
+# read samples to analyse
+samples = pd.read_table(samplesfile).set_index(["sample", "unit"], drop=False)
+print(samples.loc[('Id1_AA', 'rep1'), ["fq1", "fq2"]].dropna())
+
+
 ##### rules #####
 rule generate_genome:
     input:
@@ -26,19 +40,16 @@ rule generate_genome:
 
 rule cutadapt:
     input:
-        fastq1="reads/S01_S1_R1_001.fastq",
-        fastq2="reads/S01_S1_R2_001.fastq",
+        get_fastq
     output:
-        fastq1="trimmed/Id1_AA-rep1.1.fastq",
-        fastq2="trimmed/Id1_AA-rep1.2.fastq",
-        qc="trimmed/Id1_AA-rep1.qc.txt"
+        fastq1="trimmed/{sample}-{units}.1.fastq",
+        fastq2="trimmed/{sample}-{units}.2.fastq",
+        qc="trimmed/{sample}-{units}.qc.txt"
     params:
         adapter="CTGACCTCAAGTCTGCACACGAGAAGGCTAG"
     threads: 1
     conda:
         "envs/trim.yaml"
-    log:
-        "logs/cutadapt/Id1_AA-rep1.log"
     shell:
         """
         cutadapt \
