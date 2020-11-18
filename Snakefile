@@ -5,6 +5,10 @@ rule generate_genome:
         gtf="genome/human.GRCh38.chr22.gtf"
     output:
         genome="genome/STARINDEX/Genome"
+    threads: 1
+    params:
+        saindex = 11,
+        overhang = 75
     conda:
         "envs/align.yaml"
     shell:
@@ -12,12 +16,12 @@ rule generate_genome:
         # Using STAR for genome generation
         STAR \
             --runMode genomeGenerate \
-            --runThreadN 1 \
+            --runThreadN  {threads} \
             --genomeFastaFiles {input.fa} \
             --sjdbGTFfile {input.gtf} \
             --genomeDir genome/STARINDEX \
-            --genomeSAindexNbases 11 \
-            --sjdbOverhang 75
+            --genomeSAindexNbases {params.saindex} \
+            --sjdbOverhang {params.overhang}
         """
 
 rule cutadapt:
@@ -28,6 +32,9 @@ rule cutadapt:
         fastq1="trimmed/Id1_AA-rep1.1.fastq",
         fastq2="trimmed/Id1_AA-rep1.2.fastq",
         qc="trimmed/Id1_AA-rep1.qc.txt"
+    params:
+        adapter="CTGACCTCAAGTCTGCACACGAGAAGGCTAG"
+    threads: 1
     conda:
         "envs/trim.yaml"
     log:
@@ -35,10 +42,10 @@ rule cutadapt:
     shell:
         """
         cutadapt \
-            -a CTGACCTCAAGTCTGCACACGAGAAGGCTAG \
+            -a {params.adapter} \
             -o {output.fastq1} \
             -p {output.fastq2} \
-            -j 1 \
+            -j {threads} \
             {input} \
         > {output.qc}
         """
