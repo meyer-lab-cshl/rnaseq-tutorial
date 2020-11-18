@@ -12,6 +12,12 @@ samples = pd.read_table(samplesfile).set_index(["sample", "unit"], drop=False)
 print(samples.loc[('Id1_AA', 'rep1'), ["fq1", "fq2"]].dropna())
 
 
+##### target rule
+rule all:
+    input:
+        expand("trimmed/{samples.sample}-{samples.unit}.1.fastq",
+            samples=samples.itertuples())
+
 ##### rules #####
 rule generate_genome:
     input:
@@ -42,9 +48,9 @@ rule cutadapt:
     input:
         get_fastq
     output:
-        fastq1="trimmed/{sample}-{units}.1.fastq",
-        fastq2="trimmed/{sample}-{units}.2.fastq",
-        qc="trimmed/{sample}-{units}.qc.txt"
+        fastq1="trimmed/{sample}-{unit}.1.fastq",
+        fastq2="trimmed/{sample}-{unit}.2.fastq",
+        qc="trimmed/{sample}-{unit}.qc.txt"
     params:
         adapter="CTGACCTCAAGTCTGCACACGAGAAGGCTAG"
     threads: 1
