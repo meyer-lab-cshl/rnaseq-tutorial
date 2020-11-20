@@ -13,7 +13,7 @@ samples = pd.read_table(samplesfile).set_index(["sample", "unit"], drop=False)
 ##### target rule
 rule all:
     input:
-        expand("trimmed/{samples.sample}-{samples.unit}.1.fastq",
+        expand("star/{samples.sample}-{samples.unit}.Aligned.out.sam",
             samples=samples.itertuples()),
         "qc/multiqc_report.html"
 
@@ -86,4 +86,31 @@ rule multiqc:
             --outdir qc \
             --filename multiqc_report.html \
             trimmed > {log}
+        """
+
+rule align:
+    input:
+        fastq1="trimmed/{sample}-{unit}.1.fastq",
+        fastq2="trimmed/{sample}-{unit}.2.fastq",
+        genome="genome/STARINDEX/Genome"
+    output:
+        "star/{sample}-{unit}.Aligned.out.sam",
+        "star/{sample}-{unit}.ReadsPerGene.out.tab"
+    log:
+        "logs/star/{sample}-{unit}.log"
+    params:
+        indexdir="genome/STARINDEX"
+    threads: 4
+    conda:
+        "envs/align.yaml"
+    shell:
+        """
+        STAR \
+            --runMode alignReads \
+            --runThreadN {threads} \
+            --genomeDir {params.indexdir} \
+            --readFilesIn {input.fastq1} {input.fastq2} \
+            --outFileNamePrefix star/{wildcards.sample}-{wildcards.unit}. \
+            --quantMode GeneCounts \
+            --outSAMtype SAM
         """
