@@ -56,6 +56,8 @@ rule cutadapt:
     threads: 1
     conda:
         "envs/trim.yaml"
+    log:
+        "logs/cutadapt/{sample}-{unit}.log"
     shell:
         """
         cutadapt \
