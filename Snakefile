@@ -95,6 +95,17 @@ rule align:
             --outSAMtype BAM SortedByCoordinate
         """
 
+rule index:
+    input:
+        "star/{sample}-{unit}.Aligned.sortedByCoord.out.bam",
+    output:
+        "star/{sample}-{unit}.Aligned.sortedByCoord.out.bam.bai",
+    conda:
+        "envs/index.yaml"
+    shell:
+        "samtools index {input}"
+
+
 rule multiqc:
     input:
         expand("star/{samples.sample}-{samples.unit}.Aligned.sortedByCoord.out.bam",
