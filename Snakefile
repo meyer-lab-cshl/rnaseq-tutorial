@@ -15,7 +15,7 @@ rule all:
     input:
         expand("star/{samples.sample}-{samples.unit}.Aligned.sortedByCoord.out.bam.bai",
             samples=samples.itertuples()),
-        "qc/multiqc_report.html"
+            "qc/multiqc_report.html"
 
 ##### rules #####
 rule generate_genome:
@@ -127,6 +127,8 @@ rule rseqc_coverage:
 rule multiqc:
     input:
         expand("star/{samples.sample}-{samples.unit}.Aligned.sortedByCoord.out.bam",
+            samples=samples.itertuples()),
+        expand("qc/rseqc/{samples.sample}-{samples.unit}.geneBodyCoverage.txt",
             samples=samples.itertuples())
     output:
         "qc/multiqc_report.html"
@@ -141,5 +143,5 @@ rule multiqc:
             --export \
             --outdir qc \
             --filename multiqc_report.html \
-            trimmed star > {log}
+            trimmed star qc > {log}
         """
