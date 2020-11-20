@@ -9,14 +9,13 @@ samplesfile = "samples.txt"
 
 # read samples to analyse
 samples = pd.read_table(samplesfile).set_index(["sample", "unit"], drop=False)
-print(samples.loc[('Id1_AA', 'rep1'), ["fq1", "fq2"]].dropna())
-
 
 ##### target rule
 rule all:
     input:
         expand("trimmed/{samples.sample}-{samples.unit}.1.fastq",
-            samples=samples.itertuples())
+            samples=samples.itertuples()),
+        "qc/multiqc_report.html"
 
 ##### rules #####
 rule generate_genome:
@@ -67,4 +66,24 @@ rule cutadapt:
             -j {threads} \
             {input} \
         > {output.qc}
+        """
+
+rule multiqc:
+    input:
+        expand("trimmed/{samples.sample}-{samples.unit}.qc.txt",
+            samples=samples.itertuples())
+    output:
+        "qc/multiqc_report.html"
+    log:
+        "logs/multiqc.log"
+    conda:
+        "envs/multiqc.yaml"
+    shell:
+        """
+        multiqc \
+            --force \
+            --export \
+            --outdir qc \
+            --filename multiqc_report.html \
+            trimmed > {log}
         """
