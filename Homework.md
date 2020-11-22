@@ -30,7 +30,9 @@ snakemake).
 Snakemake has the neat functionality of generating a final html report. Have
 a look at this link: https://snakemake.readthedocs.io/en/stable/snakefiles/reporting.html
 and generate a final html report of your pipeline (make sure you've got the
-latest snakemake installed: version 5.29).
+latest snakemake installed: version 5.29; if you got an earlier version,
+there might be a bug in the snakemake report function, throwing this error:
+`NameError: name 'contains_wildcard' is not defined`).
 
 Send your final snakemake file, your html report and the number of
 differentially expressed genes for grading.
