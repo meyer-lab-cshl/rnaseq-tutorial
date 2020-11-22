@@ -3,7 +3,6 @@ import pandas as pd
 def get_fastq(wildcards):
     return samples.loc[(wildcards.sample, wildcards.unit), ["fq1", "fq2"]].dropna()
 
-
 # parameters
 samplesfile = "samples.txt"
 STRAND = "reverse"
@@ -14,10 +13,15 @@ SAMPLESFILE="samples.txt"
 # read samples to analyse
 samples = pd.read_table(samplesfile).set_index(["sample", "unit"], drop=False)
 
+##### setup report #####
+report: "report/workflow.rst"
+
 ##### target rule
 rule all:
     input:
-        "counts/all.tsv",
+        expand("results/diffexp/{contrast}.diffexp.txt",
+            contrast = "AA_vs_control"),
+        "results/diffexp/pca.pdf",
         "qc/multiqc_report.html"
 
 ##### rules #####
@@ -167,17 +171,17 @@ rule count_matrix:
 
 rule setup_de:
     input:
-        counts="counts/all.tsv"
+        counts="counts/all.tsv",
+        samples=SAMPLESFILE
     output:
         dds="deseq2/all.rds"
     params:
         species=SPECIES,
-        design=DESIGN,
-        samples=SAMPLESFILE
+        design=DESIGN
     conda:
         "envs/deseq2.yaml"
     log:
-        "logs/deseq2/setyp.log"
+        "logs/deseq2/setup.log"
     script:
         "scripts/setup_deseq2.R"
 
@@ -185,12 +189,13 @@ rule deseq2:
     input:
         dds="deseq2/all.rds",
     output:
-        table="results/diffexp/{contrast}.diffexp.txt",
-        ma_plot="results/diffexp/{contrast}.ma-plot.pdf",
+        table=report("results/diffexp/{contrast}.diffexp.txt",
+            "report/diffexp.rst"),
+        ma_plot=report("results/diffexp/{contrast}.ma-plot.pdf",
+            "report/ma.rst"),
         up="results/diffexp/deg-sig-up_{contrast}.csv",
         down="results/diffexp/deg-sig-down_{contrast}.csv"
     params:
-        contrast=['AA', 'control'],
         design=DESIGN,
         samples=SAMPLESFILE
     conda:
