@@ -14,7 +14,11 @@ library("cowplot")
 ############
 
 dds <- readRDS(snakemake@input[["dds"]])
-color <- sym(snakemake@params[['pca']][['colorby']])
+if (!is.null(snakemake@params[['colorby']])) {
+  color <- sym(snakemake@params[['colorby']])
+} else {
+  color <- sym('condition')
+}
 ################
 ## analysis ####
 ################
