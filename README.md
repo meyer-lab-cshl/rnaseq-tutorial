@@ -6,6 +6,16 @@ i.e. we should get the same results using the pipeline on the same data, irrespe
 analysed them on. To achieve this, we will work with contained software environments, using `conda` (which you
 should all have installed already when you installed [Anaconda](https://www.anaconda.com/products/individual).
 
+During the lectures, we will build our pipeline from scratch, starting with how to write snakemake rules. In the end,
+we will have built an analysis pipeline for RNAseq including alignment, quality control and differential expression
+analysis. There is also a [homework](HOMEWORK.md) assignment that will ask you to extend the pipeline, evaluate your results and
+learn how to generate an analysis report. 
+
+## Directory structure
+The files you see in this directory are either part of the pipeline ([Snakemake](Snakemake),[scripts](scripts), [envs](envs)), or
+contain the example data to run the analysis ([genome](genome), [reads](reads), [samples.txt](samples.txt)).
+
+## Set-up
 To get started, please install the required software packages before the lectures.
 The set-up is described below. If you run into issues with the installation, please let me know BEFORE the
 first session, so we can resolve any problems before the lectures.
@@ -13,7 +23,6 @@ first session, so we can resolve any problems before the lectures.
 (Don't worry if the setup does not make sense to you, or if you are not familiar with the commands yet; we will
 cover it all in the lectures)
 
-## Set-up
 **1. Install a text editor**
 Please make sure you have a text editor installed on your computer; if you do
 not have one, give [Atom}(https://atom.io/) a try!
@@ -92,7 +101,3 @@ ERROR: activate_clang_osx-64.sh failed, see above for details
 ERROR: This cross-compiler package contains no program /Users/hannah/teaching/rnaseq/.snakemake/conda/381cf40c/bin/x86_64-apple-darwin13.4.0-clang++
 ERROR: activate_clangxx_osx-64.sh failed, see above for details
 ```
-
-## Analysis
-
-## Results
