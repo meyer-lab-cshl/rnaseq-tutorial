@@ -25,7 +25,7 @@ cover it all in the lectures)
 
 **1. Install a text editor**
 Please make sure you have a text editor installed on your computer; if you do
-not have one, give [Atom}(https://atom.io/) a try!
+not have one, give [Atom](https://atom.io/) a try!
 
 **2. Create a conda environment for the tutorial.**
 - Open your terminal app (aka commad line, shell)
