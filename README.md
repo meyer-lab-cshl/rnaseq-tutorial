@@ -3,8 +3,7 @@
 We will use the workflow manager [snakemake](https://snakemake.readthedocs.io/en/stable/index.html) to develop
 a RNAseq pipeline. One big part of developing successful pipelines is making them reproducible and transferable,
 i.e. we should get the same results using the pipeline on the same data, irrespective of which compute/system we
-analysed them on. To achieve this, we will work with contained software environments, using `conda` (which you
-should all have installed already when you installed [Anaconda](https://www.anaconda.com/products/individual).
+analysed them on. To achieve this, we will work with contained software environments, using `conda` (please install [Anaconda](https://www.anaconda.com/products/individual) if you haven't yet, so we can make use of this feature).
 
 During the lectures, we will build our pipeline from scratch, starting with how to write snakemake rules. In the end,
 we will have built an analysis pipeline for RNAseq including alignment, quality control and differential expression
