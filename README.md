@@ -92,7 +92,3 @@ ERROR: activate_clang_osx-64.sh failed, see above for details
 ERROR: This cross-compiler package contains no program /Users/hannah/teaching/rnaseq/.snakemake/conda/381cf40c/bin/x86_64-apple-darwin13.4.0-clang++
 ERROR: activate_clangxx_osx-64.sh failed, see above for details
 ```
-
-## Analysis
-
-## Results
