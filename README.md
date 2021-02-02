@@ -3,9 +3,18 @@
 We will use the workflow manager [snakemake](https://snakemake.readthedocs.io/en/stable/index.html) to develop
 a RNAseq pipeline. One big part of developing successful pipelines is making them reproducible and transferable,
 i.e. we should get the same results using the pipeline on the same data, irrespective of which compute/system we
-analysed them on. To achieve this, we will work with contained software environments, using `conda` (which you
-should all have installed already when you installed [Anaconda](https://www.anaconda.com/products/individual).
+analysed them on. To achieve this, we will work with contained software environments, using `conda` (please install [Anaconda](https://www.anaconda.com/products/individual) if you haven't yet, so we can make use of this feature).
 
+During the lectures, we will build our pipeline from scratch, starting with how to write snakemake rules. In the end,
+we will have built an analysis pipeline for RNAseq including alignment, quality control and differential expression
+analysis. There is also a [homework](HOMEWORK.md) assignment that will ask you to extend the pipeline, evaluate your results and
+learn how to generate an analysis report. 
+
+## Directory structure
+The files you see in this directory are either part of the pipeline ([Snakemake](Snakemake),[scripts](scripts), [envs](envs)), or
+contain the example data to run the analysis ([genome](genome), [reads](reads), [samples.txt](samples.txt)).
+
+## Set-up
 To get started, please install the required software packages before the lectures.
 The set-up is described below. If you run into issues with the installation, please let me know BEFORE the
 first session, so we can resolve any problems before the lectures.
@@ -13,10 +22,9 @@ first session, so we can resolve any problems before the lectures.
 (Don't worry if the setup does not make sense to you, or if you are not familiar with the commands yet; we will
 cover it all in the lectures)
 
-## Set-up
 **1. Install a text editor**
 Please make sure you have a text editor installed on your computer; if you do
-not have one, give [Atom}(https://atom.io/) a try!
+not have one, give [Atom](https://atom.io/) a try!
 
 **2. Create a conda environment for the tutorial.**
 - Open your terminal app (aka commad line, shell)
