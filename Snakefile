@@ -1,9 +1,12 @@
-
 import pandas as pd
 samplesfile = "samples.txt"
 
 samples = pd.read_table(samplesfile).set_index(["sample", "unit"], drop=False)
-print(samples.loc[('Id1_AA', 'rep1'), ["fq1", "fq2"]].dropna())
+
+rule all:
+    input:
+        expand("trimmed/{samples.sample}-{samples.unit}.1.fastq",
+            samples=samples.itertuples())
 
 rule genome:
     input:
@@ -31,7 +34,6 @@ rule genome:
 
 def get_fastq(wildcards):
     return samples.loc[(wildcards.sample, wildcards.unit), ["fq1", "fq2"]].dropna()
-
 
 rule cutadapt:
     input:
