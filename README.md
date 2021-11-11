@@ -12,7 +12,7 @@ if you haven't yet, so we can make use of this feature).
 During the lectures, we will build our pipeline from scratch, starting with how
 to write snakemake rules. In the end, we will have built an analysis pipeline for
 RNAseq including alignment, quality control and differential expression analysis.
-There is also a [homework](HOMEWORK.md) assignment that will ask you to extend
+There is also a [homework](Homework.md) assignment that will ask you to extend
 the pipeline, evaluate your results and learn how to generate an analysis report.
 
 ## Directory structure
