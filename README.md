@@ -12,7 +12,7 @@ if you haven't yet, so we can make use of this feature).
 During the lectures, we will build our pipeline from scratch, starting with how
 to write snakemake rules. In the end, we will have built an analysis pipeline for
 RNAseq including alignment, quality control and differential expression analysis.
-There is also a [homework](HOMEWORK.md) assignment that will ask you to extend
+There is also a [homework](Homework.md) assignment that will ask you to extend
 the pipeline, evaluate your results and learn how to generate an analysis report.
 
 ## Directory structure
@@ -35,9 +35,10 @@ Please make sure you have a text editor installed on your computer; if you do
 not have one, give [Atom](https://atom.io/) a try!
 
 **2. Install Snakemake**
-Following the recommodations by the snakemake developers, we will first install
-_mamba_, a robuster and faster version of the default conda package manager
-that is shipped with Anaconda.
+Following the recommodations by the
+[snakemake developers](https://snakemake.readthedocs.io/en/stable/getting_started/installation.html),
+we will first install _mamba_, a robuster and faster version of the default
+conda package manager that is shipped with Anaconda.
 
 - Open your terminal app (aka commad line, shell)
 - Type the following command:
@@ -62,7 +63,7 @@ Executing transaction: done
 
 We will then use mamba to create a software environment specific for our
 analysis. At the moment, all it needs to contain is snakemake itself. To create
-this environmane type:
+this environment type:
 
 ```bash
 mamba create -c conda-forge -c bioconda -n snakemake-rnaseq snakemake

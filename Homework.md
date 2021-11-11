@@ -14,7 +14,7 @@ your multiqc rule.
 
 ## PCA
 Use the pca.R script in the scripts folder to visualise the expression data
-in a PCA plot. As input as requires the 'deseq2/all.rds' output from the
+in a PCA plot. As input it requires the 'deseq2/all.rds' output from the
 setup_de rule named as dds. As output it requires the name 'pca_plot'; you
 can choose the output file name, but it should end in 'pdf' (have a look at the
 script file if you are interested what's happening under the hood.). The output
@@ -30,7 +30,7 @@ snakemake).
 Snakemake has the neat functionality of generating a final html report. Have
 a look at this link: https://snakemake.readthedocs.io/en/stable/snakefiles/reporting.html
 and generate a final html report of your pipeline (make sure you've got the
-latest snakemake installed: version 5.29; if you got an earlier version,
+latest snakemake installed: version 6.10; if you got an earlier version,
 there might be a bug in the snakemake report function, throwing this error:
 `NameError: name 'contains_wildcard' is not defined`).
 
