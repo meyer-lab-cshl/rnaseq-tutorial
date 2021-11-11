@@ -12,6 +12,8 @@ scripts/.snakemake*
 !env.yaml
 !LICENSE
 !README.md
+!Notes.md
+!Homework.md
 !reads
 !rules
 !rules/*
