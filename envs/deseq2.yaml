@@ -1,6 +1,6 @@
 channels:
-  - conda-forge/label/gcc7
-  - bioconda/label/gcc7
+  - conda-forge
+  - bioconda
 dependencies:
   - r-base
   - r-tidyverse
