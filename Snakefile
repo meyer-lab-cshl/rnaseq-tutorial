@@ -20,6 +20,7 @@ rule generate_genome:
         star --version > results/align.txt
         echo 'align environment works' >> results/align.txt
         """
+
 rule cutadapt:
     conda:
         "envs/trim.yaml"
@@ -30,6 +31,7 @@ rule cutadapt:
         cutadapt --version > results/trim.txt
         echo 'trim environment works' >> results/trim.txt
         """
+
 rule index:
     conda:
         "envs/index.yaml"
@@ -40,6 +42,7 @@ rule index:
         samtools --version > results/index.txt
         echo 'index environment works' >> results/index.txt
         """
+
 rule rseqc_coverage:
     conda:
         "envs/rseqc.yaml"
@@ -51,6 +54,7 @@ rule rseqc_coverage:
         infer_experiment.py --version >> results/rseqc.txt
         echo 'rseqc environment works' >> results/rseqc.txt
         """
+
 rule count_matrix:
     conda:
        "envs/pandas.yaml"
@@ -61,6 +65,7 @@ rule count_matrix:
         python -c 'import pandas as pd' > results/pandas.txt
         echo 'pandas environment works' >> results/pandas.txt
         """
+
 rule deseq2:
     conda:
         "envs/deseq2.yaml"
@@ -73,6 +78,7 @@ rule deseq2:
         > results/deseq2.txt
         echo 'deseq2 environment works' >> results/deseq2.txt
         """
+
 rule multiqc:
     conda:
         "envs/multiqc.yaml"
