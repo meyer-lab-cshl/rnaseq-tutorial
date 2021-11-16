@@ -17,7 +17,7 @@ rule generate_genome:
         "results/align.txt",
     shell:
         """
-        star --version > results/align.txt
+        STAR --version > results/align.txt
         echo 'align environment works' >> results/align.txt
         """
 
