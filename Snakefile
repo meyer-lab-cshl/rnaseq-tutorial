@@ -1,3 +1,10 @@
+rule all:
+    input:
+        "genome/STARINDEX/Genome",
+        "trimmed/Id1_AA-rep1.1.fastq"
+
+
+
 rule generate_genome:
     input:
         genome="genome/human.GRCh38.chr22.fasta",
@@ -6,6 +13,9 @@ rule generate_genome:
           "genome/STARINDEX/Genome"
     conda:
           "envs/align.yaml"
+    params:
+        length=75,
+        Nbases=11
     shell:
           """
           STAR \
@@ -14,8 +24,8 @@ rule generate_genome:
               --genomeFastaFiles {input.genome} \
               --sjdbGTFfile {input.gtf} \
               --genomeDir genome/STARINDEX \
-              --genomeSAindexNbases 11 \
-              --sjdbOverhang 75
+              --genomeSAindexNbases {params.Nbases} \
+              --sjdbOverhang {params.length}
           """
 
 rule cutadapt:
@@ -28,15 +38,18 @@ rule cutadapt:
           qc="trimmed/Id1_AA-rep1.qc.txt"
       conda:
           "envs/trim.yaml"
+      params:
+          nodes=1,
+          adapter="CTGACCTCAAGTCTGCACACGAGAAGGCTAG"
       log:
           "logs/cutadapt/Id1_AA-rep1.log"
       shell:
           """
           cutadapt \
-              -a CTGACCTCAAGTCTGCACACGAGAAGGCTAG \
+              -a {params.adapter} \
               -o {output.fastq1} \
               -p {output.fastq2} \
-              -j 1 \
+              -j {params.nodes} \
               {input} \
           > {output.qc}
           """
