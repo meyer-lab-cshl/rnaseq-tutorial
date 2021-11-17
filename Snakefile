@@ -11,8 +11,6 @@ samples = pd.read_table(samplesfile).set_index(["sample", "unit"], drop=False)
 
 rule all:
     input:
-        expand("star/{samples.sample}-{samples.unit}.Aligned.sortedByCoord.out.bam",
-                samples=samples.itertuples()),
         "qc/multiqc_report.html",
         "genome/STARINDEX/Genome"
 
@@ -95,9 +93,40 @@ rule align:
             --outSAMtype BAM SortedByCoordinate
         """
 
+rule index:
+    input:
+        "star/{sample}-{unit}.Aligned.sortedByCoord.out.bam",
+    output:
+        "star/{sample}-{unit}.Aligned.sortedByCoord.out.bam.bai",
+    conda:
+        "envs/index.yaml"
+    shell:
+        "samtools index {input}"
+
+
+rule rseqc_coverage:
+    input:
+        bed="genome/human.GRCh38.chr22.bed",
+        bam="star/{sample}-{unit}.Aligned.sortedByCoord.out.bam",
+        bai="star/{sample}-{unit}.Aligned.sortedByCoord.out.bam.bai"
+    output:
+        "qc/rseqc/{sample}-{unit}.geneBodyCoverage.txt"
+    log:
+        "logs/rseqc/rseqc_coverage/{sample}-{unit}.log"
+    conda:
+        "envs/rseqc.yaml"
+    shell:
+        """
+        geneBody_coverage.py \
+            -r {input.bed} \
+            -i {input.bam} \
+            -o qc/rseqc/{wildcards.sample}-{wildcards.unit} 2> {log}
+        """
+
+
 rule multiqc:
     input:
-        expand("star/{samples.sample}-{samples.unit}.Aligned.sortedByCoord.out.bam",
+        expand("qc/rseqc/{samples.sample}-{samples.unit}.geneBodyCoverage.txt",
             samples=samples.itertuples())
     output:
         "qc/multiqc_report.html"
@@ -112,5 +141,5 @@ rule multiqc:
             --export \
             --outdir qc \
             --filename multiqc_report.html \
-            trimmed star > {log}
+            trimmed star qc/rseqc > {log}
         """
