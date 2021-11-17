@@ -11,6 +11,8 @@ samples = pd.read_table(samplesfile).set_index(["sample", "unit"], drop=False)
 
 rule all:
     input:
+        expand("star/{samples.sample}-{samples.unit}.Aligned.sortedByCoord.out.bam",
+                samples=samples.itertuples()),
         "qc/multiqc_report.html",
         "genome/STARINDEX/Genome"
 
@@ -72,7 +74,7 @@ rule align:
         gtf="genome/human.GRCh38.chr22.gtf",
         genome="genome/STARINDEX/Genome"
     output:
-        "star/{sample}-{unit}.Aligned.out.sam",
+        "star/{sample}-{unit}.Aligned.sortedByCoord.out.bam",
         "star/{sample}-{unit}.ReadsPerGene.out.tab"
     log:
         "logs/star/{sample}-{unit}.log"
@@ -90,7 +92,7 @@ rule align:
             --readFilesIn {input.fastq1} {input.fastq2} \
             --outFileNamePrefix star/{wildcards.sample}-{wildcards.unit}. \
             --quantMode GeneCounts \
-            --outSAMtype SAM
+            --outSAMtype BAM SortedByCoordinate
         """
 
 rule multiqc:
