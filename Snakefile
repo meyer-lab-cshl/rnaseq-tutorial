@@ -6,12 +6,11 @@ samplesfile = "samples.txt"
 
 samples = pd.read_table(samplesfile).set_index(["sample", "unit"], drop=False)
 
-
-
 rule all:
     input:
-        "genome/STARINDEX/Genome",
-        "trimmed/Id2_AA-rep2.1.fastq"
+        expand("trimmed/{samples.sample}-{samples.unit}.1.fastq",
+            samples=samples.itertuples()),
+        "genome/STARINDEX/Genome"
 
 
 
