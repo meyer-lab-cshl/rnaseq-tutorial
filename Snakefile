@@ -1,3 +1,15 @@
+import pandas as pd
+
+samplesfile = "samples.txt"
+
+
+
+samples = pd.read_table(samplesfile).set_index(["sample", "unit"], drop=False)
+print(samples)
+print(samples.loc[('Id1_AA', 'rep1'), ["fq1", "fq2"]].dropna())
+
+
+
 rule all:
     input:
         "genome/STARINDEX/Genome",
@@ -30,8 +42,7 @@ rule generate_genome:
 
 rule cutadapt:
       input:
-          fastq1="reads/S01_S1_R1_001.fastq",
-          fastq2="reads/S01_S1_R2_001.fastq",
+          samples.loc[('Id1_AA', 'rep1'), ["fq1", "fq2"]].dropna()
       output:
           fastq1="trimmed/Id1_AA-rep1.1.fastq",
           fastq2="trimmed/Id1_AA-rep1.2.fastq",
