@@ -5,15 +5,13 @@ samplesfile = "samples.txt"
 
 
 samples = pd.read_table(samplesfile).set_index(["sample", "unit"], drop=False)
-print(samples)
-print(samples.loc[('Id1_AA', 'rep1'), ["fq1", "fq2"]].dropna())
 
 
 
 rule all:
     input:
         "genome/STARINDEX/Genome",
-        "trimmed/Id1_AA-rep1.1.fastq"
+        "trimmed/Id2_AA-rep2.1.fastq"
 
 
 
@@ -40,20 +38,23 @@ rule generate_genome:
               --sjdbOverhang {params.length}
           """
 
+def get_fastq(wildcards):
+    return samples.loc[(wildcards.sample, wildcards.unit), ["fq1", "fq2"]].dropna()
+
 rule cutadapt:
       input:
-          samples.loc[('Id1_AA', 'rep1'), ["fq1", "fq2"]].dropna()
+          get_fastq
       output:
-          fastq1="trimmed/Id1_AA-rep1.1.fastq",
-          fastq2="trimmed/Id1_AA-rep1.2.fastq",
-          qc="trimmed/Id1_AA-rep1.qc.txt"
+          fastq1="trimmed/{sample}-{unit}.1.fastq",
+          fastq2="trimmed/{sample}-{unit}.2.fastq",
+          qc="trimmed/{sample}-{unit}.qc.txt"
       conda:
           "envs/trim.yaml"
       params:
           nodes=1,
           adapter="CTGACCTCAAGTCTGCACACGAGAAGGCTAG"
       log:
-          "logs/cutadapt/Id1_AA-rep1.log"
+          "logs/cutadapt/{sample}-{unit}.log"
       shell:
           """
           cutadapt \
