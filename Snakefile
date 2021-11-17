@@ -1,15 +1,17 @@
 import pandas as pd
 
+## functions ####
+def get_fastq(wildcards):
+    return samples.loc[(wildcards.sample, wildcards.unit), ["fq1", "fq2"]].dropna()
+
+
+## input data ###£
 samplesfile = "samples.txt"
-
-
-
 samples = pd.read_table(samplesfile).set_index(["sample", "unit"], drop=False)
 
 rule all:
     input:
-        expand("trimmed/{samples.sample}-{samples.unit}.1.fastq",
-            samples=samples.itertuples()),
+        "qc/multiqc_report.html",
         "genome/STARINDEX/Genome"
 
 
@@ -37,8 +39,6 @@ rule generate_genome:
               --sjdbOverhang {params.length}
           """
 
-def get_fastq(wildcards):
-    return samples.loc[(wildcards.sample, wildcards.unit), ["fq1", "fq2"]].dropna()
 
 rule cutadapt:
       input:
@@ -64,3 +64,23 @@ rule cutadapt:
               {input} \
           > {output.qc}
           """
+
+rule multiqc:
+    input:
+        expand("trimmed/{samples.sample}-{samples.unit}.qc.txt",
+            samples=samples.itertuples())
+    output:
+        "qc/multiqc_report.html"
+    log:
+        "logs/multiqc.log"
+    conda:
+        "envs/multiqc.yaml"
+    shell:
+        """
+        multiqc \
+            --force \
+            --export \
+            --outdir qc \
+            --filename multiqc_report.html \
+            trimmed > {log}
+        """
