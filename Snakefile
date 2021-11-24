@@ -1,10 +1,12 @@
 import pandas as pd
-samplesfile = "samples.txt"
 
-samples = pd.read_table(samplesfile).set_index(["sample", "unit"], drop=False)
+##### load config and sample sheets #####
+configfile: "config.yaml"
+samples = pd.read_table(config['samplesfile']).set_index(["sample", "unit"], drop=False)
 
 rule all:
     input:
+        "counts/all.tsv",
         expand("star/{samples.sample}-{samples.unit}.Aligned.sortedByCoord.out.bam",
             samples=samples.itertuples()),
         "qc/multiqc_report.html"
@@ -19,7 +21,7 @@ rule genome:
     conda:
         "envs/align.yaml"
     params:
-        saindex=11,
+        saindex=config['saindex'],
         overhang=75
     shell:
         """
@@ -88,6 +90,22 @@ rule align:
             --quantMode GeneCounts \
             --outSAMtype BAM SortedByCoordinate
         """
+
+rule count_matrix:
+    input:
+        expand("star/{samples.sample}-{samples.unit}.ReadsPerGene.out.tab",
+            samples=samples.itertuples())
+    output:
+        "counts/all.tsv"
+    params:
+        samples=samples['sample'].tolist(),
+        strand=config['strandedness']
+    log:
+        "logs/counts/count_matrix.log"
+    conda:
+       "envs/pandas.yaml"
+    script:
+        "scripts/count-matrix.py"
 
 rule multiqc:
     input:
