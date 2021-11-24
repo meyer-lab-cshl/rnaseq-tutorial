@@ -111,17 +111,18 @@ rule count_matrix:
 
 rule setup_de:
     input:
-        counts="counts/all.tsv"
+        counts="counts/all.tsv",
+        samples="samples.txt",
+        annotation="genome/ENSEMBL_GRCh38p13.txt"
     output:
         dds="deseq2/all.rds"
     params:
         species="human",
         design="~ condition",
-        samples="samples.txt"
     conda:
         "envs/deseq2.yaml"
     log:
-        "logs/deseq2/setyp.log"
+        "logs/deseq2/setup.log"
     script:
         "scripts/setup_deseq2.R"
 

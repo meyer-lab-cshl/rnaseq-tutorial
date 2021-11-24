@@ -20,6 +20,10 @@ message("Reading sample file")
 coldata <- read.table(snakemake@input[["samples"]], header=TRUE,
                       row.names="sample", check.names=FALSE, sep="\t")
 
+message("Reading annotation file")
+annotation <- read.table(snakemake@input[["annotation"]], header=TRUE,
+                       check.names=FALSE, sep="\t")
+
 message("Getting experimental design")
 design <- as.formula(snakemake@params[["design"]])
 
@@ -57,22 +61,7 @@ dds <- DESeq(dds)
 # Remove build number on ENS gene id
 rownames(dds) <- gsub("\\.\\d*", "", rownames(dds))
 
-# Annotate by gene names
-if (snakemake@params[["species"]] == "mouse") {
-    ensembl <- useMart("ensembl", dataset="mmusculus_gene_ensembl")
-} else if(snakemake@params[["species"]] == "human") {
-    ensembl <- useMart("ensembl",dataset="hsapiens_gene_ensembl")
-} else {
-    stop("No annotation (biomart) specified for organism:",
-         snakemake@params[["species"]])
-}
-
-genemap <- getBM(attributes=c('ensembl_gene_id', "external_gene_name"),
-       filters = 'ensembl_gene_id',
-       values = rownames(dds),
-       mart = ensembl) %>%
-    dplyr::rename(gene_id = ensembl_gene_id,
-           symbol = external_gene_name) %>%
+genemap <- annotation %>%
     distinct()
 
 featureData <- tibble(gene_id=rownames(dds)) %>%
@@ -80,6 +69,7 @@ featureData <- tibble(gene_id=rownames(dds)) %>%
     mutate(symbol=case_when(is.na(symbol) ~ gene_id,
                             TRUE ~ symbol)) %>%
     select(symbol)
+
 mcols(dds) <- DataFrame(mcols(dds), featureData)
 
 saveRDS(dds, snakemake@output[["dds"]])
