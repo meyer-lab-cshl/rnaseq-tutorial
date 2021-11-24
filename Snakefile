@@ -1,9 +1,25 @@
+from snakemake.utils import min_version
 import pandas as pd
 
-## functions ####
+##### functions #####
 def get_fastq(wildcards):
+    """
+    Use sample information sheet to find read files for each sample:
+    * index sample information by sample name and unit (e.g. replicate)
+    * extract the corresponding fwd/rev read filenames from the fq1/fq2 columns
+    """
     return samples.loc[(wildcards.sample, wildcards.unit), ["fq1", "fq2"]].dropna()
 
+
+##### setup report #####
+# captions/descriptions for output that will be included in final report generated
+# by running snakemake --report
+# results to be included in report enclosed in report(...); see eg deseq2 rule
+report: "report/workflow.rst"
+
+##### set minimum snakemake version #####
+# useful to specify, if pipeline relies on minimum snakemake version
+min_version("6.10.0")
 
 ## input data ###
 samplesfile = "samples.txt"
