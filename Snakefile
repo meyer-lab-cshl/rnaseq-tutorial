@@ -146,8 +146,10 @@ rule deseq2:
     input:
         dds="deseq2/all.rds",
     output:
-        table="results/diffexp/{contrast}.diffexp.txt",
-        ma_plot="results/diffexp/{contrast}.ma-plot.pdf",
+        table=report("results/diffexp/{contrast}.diffexp.txt",
+            "report/diffexp.rst"),
+        ma_plot=report("results/diffexp/{contrast}.ma-plot.pdf",
+            "report/ma.rst"),
         up="results/diffexp/deg-sig-up_{contrast}.csv",
         down="results/diffexp/deg-sig-down_{contrast}.csv"
     params:
