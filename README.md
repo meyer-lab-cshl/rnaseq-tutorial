@@ -92,7 +92,7 @@ conda activate snakemake-rnaseq
 ```bash
 snakemake --version
 ```
-You should see: `6.10.0`
+You should see: `7.18.2`
 
 **4. Move into the rnaseq-tutorial directory**
 - enter the directory using the command line `cd /path/2/rnaseq-tutorial`
