@@ -1,3 +1,9 @@
+rule all:
+    input:
+        "genome/STARINDEX/Genome",
+        "trimmed/Id1_AA-rep1.qc.txt"
+
+
 rule build_genome:
     input:
         genome="genome/human.GRCh38.chr22.fasta",
