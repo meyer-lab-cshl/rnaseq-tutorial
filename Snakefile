@@ -57,3 +57,26 @@ rule cutadapt:
             {input} \
         > {output.qc}
         """
+
+#################################################
+# multi qc to visualise results of trim
+#################################################
+rule multiqc:
+    input:
+        expand("trimmed/{samples.sample}-{samples.unit}.qc.txt",
+            samples=samples.itertuples())
+    output:
+        "qc/multiqc_report.html"
+    log:
+        "logs/multiqc.log"
+    conda:
+        "envs/multiqc.yaml"
+    shell:
+        """
+        multiqc \
+            --force \
+            --export \
+            --outdir qc \
+            --filename multiqc_report.html \
+            trimmed > {log}
+        """
