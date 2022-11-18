@@ -9,8 +9,7 @@ def get_fastq(wildcards):
 rule all:
     input:
         "genome/STARINDEX/Genome",
-        expand("trimmed/{samples.sample}-{samples.unit}.1.fastq",
-            samples=samples.itertuples())
+        "qc/multiqc_report.html"
 
 
 rule build_genome:
