@@ -10,8 +10,10 @@ rule all:
     input:
         "genome/STARINDEX/Genome",
         "qc/multiqc_report.html",
-        expand("star/{samples.sample}-{samples.unit}.Aligned.sortedByCoord.out.bam",
-            samples=samples.itertuples())
+        #expand("star/{samples.sample}-{samples.unit}.Aligned.sortedByCoord.out.bam",
+        #    samples=samples.itertuples())
+        expand("qc/rseqc/{samples.sample}-{samples.unit}.geneBodyCoverage.txt",
+        samples=samples.itertuples())
 
 
 
@@ -86,7 +88,7 @@ rule multiqc:
         """
 
 #################################################
-# Align; SAM as output; one file only
+# Align; BAM as output; one file only
 #################################################
 
 rule align:
@@ -115,4 +117,40 @@ rule align:
             --outFileNamePrefix star/{wildcards.sample}-{wildcards.unit}. \
             --quantMode GeneCounts \
             --outSAMtype BAM SortedByCoordinate
+        """
+
+
+#################################################
+# Helper rule for downstream commands: index bam
+#################################################
+rule index:
+    input:
+        "star/{sample}-{unit}.Aligned.sortedByCoord.out.bam",
+    output:
+        "star/{sample}-{unit}.Aligned.sortedByCoord.out.bam.bai",
+    conda:
+        "envs/index.yaml"
+    shell:
+        "samtools index {input}"
+
+#################################################
+# More QC: Gene body coverage
+#################################################
+rule rseqc_coverage:
+    input:
+        bed="genome/human.GRCh38.chr22.bed",
+        bam="star/{sample}-{unit}.Aligned.sortedByCoord.out.bam",
+        bai="star/{sample}-{unit}.Aligned.sortedByCoord.out.bam.bai"
+    output:
+        "qc/rseqc/{sample}-{unit}.geneBodyCoverage.txt"
+    log:
+        "logs/rseqc/rseqc_coverage/{sample}-{unit}.log"
+    conda:
+        "envs/rseqc.yaml"
+    shell:
+        """
+        geneBody_coverage.py \
+            -r {input.bed} \
+            -i {input.bam} \
+            -o qc/rseqc/{wildcards.sample}-{wildcards.unit} 2> {log}
         """
