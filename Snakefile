@@ -70,6 +70,8 @@ rule multiqc:
         expand("trimmed/{samples.sample}-{samples.unit}.qc.txt",
             samples=samples.itertuples()),
         expand("star/{samples.sample}-{samples.unit}.Aligned.sortedByCoord.out.bam",
+            samples=samples.itertuples()),
+        expand("qc/rseqc/{samples.sample}-{samples.unit}.geneBodyCoverage.txt",
             samples=samples.itertuples())
     output:
         "qc/multiqc_report.html"
@@ -84,7 +86,7 @@ rule multiqc:
             --export \
             --outdir qc \
             --filename multiqc_report.html \
-            trimmed star> {log}
+            trimmed star qc> {log}
         """
 
 #################################################
