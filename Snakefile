@@ -13,7 +13,8 @@ rule all:
         #expand("star/{samples.sample}-{samples.unit}.Aligned.sortedByCoord.out.bam",
         #    samples=samples.itertuples())
         expand("qc/rseqc/{samples.sample}-{samples.unit}.geneBodyCoverage.txt",
-        samples=samples.itertuples())
+        samples=samples.itertuples()),
+        "counts/all.tsv"
 
 
 
@@ -156,3 +157,22 @@ rule rseqc_coverage:
             -i {input.bam} \
             -o qc/rseqc/{wildcards.sample}-{wildcards.unit} 2> {log}
         """
+
+#################################################
+# Let's put the counts together; script directive
+#################################################
+rule count_matrix:
+    input:
+        expand("star/{samples.sample}-{samples.unit}.ReadsPerGene.out.tab",
+            samples=samples.itertuples())
+    output:
+        "counts/all.tsv"
+    params:
+        samples=samples['sample'].tolist(),
+        strand="reverse"
+    log:
+        "logs/counts/count_matrix.log"
+    conda:
+       "envs/pandas.yaml"
+    script:
+        "scripts/count-matrix.py"
