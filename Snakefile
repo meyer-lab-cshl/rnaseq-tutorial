@@ -40,6 +40,9 @@ rule cutadapt:
         fastq1="trimmed/{sample}-{unit}.1.fastq",
         fastq2="trimmed/{sample}-{unit}.2.fastq",
         qc="trimmed/{sample}-{unit}.qc.txt"
+    threads: 1
+    params:
+        adapter="CTGACCTCAAGTCTGCACACGAGAAGGCTAG"
     conda:
         "envs/trim.yaml"
     log:
@@ -47,10 +50,10 @@ rule cutadapt:
     shell:
         """
         cutadapt \
-            -a CTGACCTCAAGTCTGCACACGAGAAGGCTAG \
+            -a {params.adapter} \
             -o {output.fastq1} \
             -p {output.fastq2} \
-            -j 1 \
+            -j {threads} \
             {input} \
         > {output.qc}
         """
