@@ -79,3 +79,35 @@ rule multiqc:
             --filename multiqc_report.html \
             trimmed > {log}
         """
+
+#################################################
+# Align; SAM as output; one file only
+#################################################
+
+rule align:
+    input:
+        fastq1="trimmed/{sample}-{unit}.1.fastq",
+        fastq2="trimmed/{sample}-{unit}.2.fastq",
+        gtf="genome/human.GRCh38.chr22.gtf",
+        genome="genome/STARINDEX/Genome"
+    output:
+        "star/{sample}-{unit}.Aligned.out.sam",
+        "star/{sample}-{unit}.ReadsPerGene.out.tab"
+    log:
+        "logs/star/{sample}-{unit}.log"
+    params:
+        indexdir="genome/STARINDEX"
+    threads: 4
+    conda:
+        "envs/align.yaml"
+    shell:
+        """
+        STAR \
+            --runMode alignReads \
+            --runThreadN {threads} \
+            --genomeDir {params.indexdir} \
+            --readFilesIn {input.fastq1} {input.fastq2} \
+            --outFileNamePrefix star/{wildcards.sample}-{wildcards.unit}. \
+            --quantMode GeneCounts \
+            --outSAMtype SAM
+        """
