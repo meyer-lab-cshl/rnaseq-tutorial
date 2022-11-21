@@ -179,47 +179,43 @@ rule count_matrix:
     script:
         "scripts/count-matrix.py"
 
-
-##### parameters #####
-DESIGN="~ condition"
-SPECIES="human"
-SAMPLESFILE="samples.txt"
-
-rule setup_de:
-    input:
-        counts="counts/all.tsv"
-    output:
-        dds="deseq2/all.rds"
-    params:
-        species=SPECIES,
-        design=DESIGN,
-        samples=SAMPLESFILE
-    conda:
-        "envs/deseq2.yaml"
-    log:
-        "logs/deseq2/setyp.log"
-    script:
-        "scripts/setup_deseq2.R"
-
 #################################################
 # DESeq2
 #################################################
+
+rule setup_de:
+    input:
+        counts="counts/all.tsv",
+        samples="samples.txt",
+        annotation="genome/ENSEMBL_GRCh38p13.txt"
+    output:
+        dds="deseq2/all.rds"
+    params:
+        species="human",
+        design="~ condition",
+    conda:
+        "envs/deseq2.yaml"
+    log:
+        "logs/deseq2/setup.log"
+    script:
+        "scripts/setup_deseq2.R"
 
 rule deseq2:
     input:
         dds="deseq2/all.rds",
     output:
-        table="results/diffexp/{contrast}.diffexp.txt",
-        ma_plot="results/diffexp/{contrast}.ma-plot.pdf",
+        table=report("results/diffexp/{contrast}.diffexp.txt",
+            "report/diffexp.rst"),
+        ma_plot=report("results/diffexp/{contrast}.ma-plot.pdf",
+            "report/ma.rst"),
         up="results/diffexp/deg-sig-up_{contrast}.csv",
         down="results/diffexp/deg-sig-down_{contrast}.csv"
-    params:
-        contrast=['AA', 'control'],
-        design=DESIGN,
-        samples=SAMPLESFILE
     conda:
         "envs/deseq2.yaml"
     log:
         "logs/deseq2/{contrast}.diffexp.log"
     script:
         "scripts/deseq2.R"
+
+
+
