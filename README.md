@@ -6,8 +6,7 @@ a RNAseq pipeline. One big part of developing successful pipelines is making
 them reproducible and transferable, i.e. we should get the same results using the
 pipeline on the same data, irrespective of which compute/system we analysed them
 on. To achieve this, we will work with contained software environments, using
-`conda` (please install [Anaconda](https://www.anaconda.com/products/individual)
-if you haven't yet, so we can make use of this feature).
+`mamba`/`conda`.
 
 During the lectures, we will build our pipeline from scratch, starting with how
 to write snakemake rules. In the end, we will have built an analysis pipeline for
@@ -34,65 +33,73 @@ with the commands yet; we will cover it all in the lectures)
 Please make sure you have a text editor installed on your computer; if you do
 not have one, give [Atom](https://atom.io/) a try!
 
+**2. Install Miniforge**
+If you do not have it installed already, we first need to install `miniforge` (Manufacturer's instruction here:
+[miniforge](https://github.com/conda-forge/miniforge#mambaforge)).
+For unix-like platforms (Mac and linux): open your terminal app (aka commad line, shell) and type:
+```bash
+wget "https://github.com/conda-forge/miniforge/releases/latest/download/Miniforge3-$(uname)-$(uname -m).sh"
+bash Miniforge3-$(uname)-$(uname -m).sh
+```
+This will download and install miniforge. If all goes well you will see this in the end:
+
+```bash
+==> For changes to take effect, close and re-open your current shell. <==
+```
+Make sure you follow this advice and close and re-open your terminal. When you've done that, simply type `mamba` in your terminal
+and you should see the `mamba` help manual, starting with
+
+```bash
+mamba                                                                                                                         [15:02:17]
+usage: mamba [-h] [-V] command ...
+
+conda is a tool for managing and deploying applications, environments and packages.
+```
+
 **2. Install Snakemake**
 Following the recommodations by the
 [snakemake developers](https://snakemake.readthedocs.io/en/stable/getting_started/installation.html),
-we will first install _mamba_, a robuster and faster version of the default
-conda package manager that is shipped with Anaconda.
-
-- Open your terminal app (aka commad line, shell)
-- Type the following command:
+we will then set-up our snakemake environment:
 
 ```bash
-conda install -n base -c conda-forge mamba
+mamba create -c conda-forge -c bioconda -n snakemake-rnaseq snakemake
 ```
-NB: this might take a while. Initially you should see:
-```bash
-Collecting package metadata (current_repodata.json): done
-Collecting package metadata (repodata.json): done
-Solving environment: done
-```
-At some point it will ask you `Proceed ([y]/n)?`. Type `y` and hit enter.
+mamba will check all packages and dependencies required to install snakemake and will
+print these to the command line. 
+
+At some point it will ask you `Confirm changes: [Y/n]`. Type `Y` and hit enter.
 
 If it successfully finishes, you will see this on your screen:
 ```bash
 Preparing transaction: done
 Verifying transaction: done
 Executing transaction: done
-```
 
-We will then use mamba to create a software environment specific for our
-analysis. At the moment, all it needs to contain is snakemake itself. To create
-this environment type:
-
-```bash
-mamba create -c conda-forge -c bioconda -n snakemake-rnaseq snakemake
-```
-
-As above, this might take a while and it will ask you again
-`Proceed ([y]/n)?`. Type `y` and hit enter. Once it finishes (if successful) you
-will see:
-
-```bash
 # To activate this environment, use
 #
-#     $ conda activate snakemake-rnaseq
+#     $ mamba activate snakemake-rnaseq
 #
 # To deactivate an active environment, use
 #
-#     $ conda deactivate
+#     $ mamba deactivate
 ```
 
 **3. Activate the snakemake environment**
 - type the following to activate the environment
 ```bash
-conda activate snakemake-rnaseq
+mamba activate snakemake-rnaseq
 ```
 - test the environment by typing
 ```bash
 snakemake --version
 ```
-You should see: `7.18.2`
+You should see: `7.32.4`
+
+- for those of you on a new Mac (using the Mx architecture based on ARM64), we also need to include this in our set-up
+  to ensure all packages can be built properly. You will only have to do this once:
+```bash
+conda config --env --set subdir osx-64
+```
 
 **4. Move into the rnaseq-tutorial directory**
 - enter the directory using the command line `cd /path/2/rnaseq-tutorial`
