@@ -1,5 +1,6 @@
-channels:
+hannels:
   - conda-forge
   - bioconda
 dependencies:
+  - bioconda::bx-python
   - bioconda::rseqc=3.0
