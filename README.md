@@ -16,7 +16,7 @@ the pipeline, evaluate your results and learn how to generate an analysis report
 
 ## Directory structure
 The files you see in this directory are either part of the pipeline
-([Snakemake](Snakemake),[scripts](scripts), [envs](envs)), or contain the example
+([Snakefile](Snakefile),[scripts](scripts), [envs](envs)), or contain the example
 data to run the analysis ([genome](genome), [reads](reads),
 [samples.txt](samples.txt)).
 
@@ -38,7 +38,7 @@ If you do not have it installed already, we first need to install `miniforge` (M
 [miniforge](https://github.com/conda-forge/miniforge#mambaforge)).
 For unix-like platforms (Mac and linux): open your terminal app (aka commad line, shell) and type:
 ```bash
-wget "https://github.com/conda-forge/miniforge/releases/latest/download/Miniforge3-$(uname)-$(uname -m).sh"
+curl -OL "https://github.com/conda-forge/miniforge/releases/latest/download/Miniforge3-$(uname)-$(uname -m).sh"
 bash Miniforge3-$(uname)-$(uname -m).sh
 ```
 This will download and install miniforge. If all goes well you will see this in the end:
@@ -95,7 +95,7 @@ snakemake --version
 ```
 You should see: `7.32.4`
 
-- for those of you on a new Mac (using the Mx architecture based on ARM64), we also need to include this in our set-up
+- for those of you on a new Mac (using the Mx chips based on ARM64 architecture), we also need to include this in our set-up
   to ensure all packages can be built properly. You will only have to do this once:
 ```bash
 conda config --env --set subdir osx-64
