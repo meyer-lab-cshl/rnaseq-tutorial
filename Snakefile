@@ -1,7 +1,8 @@
 rule all:
     input:
         "trimmed/Id1_AA-rep1.1.fastq",
-        "genome/STARINDEX/Genome"
+        "genome/STARINDEX/Genome",
+        "qc/multiqc_report.html"
 
 #################################################
 # Skeleton of a rule
@@ -51,4 +52,27 @@ rule cutadapt:
             -j 1 \
             {input} \
         > {output.qc}
+        """
+
+
+#################################################
+# multi qc to visualise results of trim
+#################################################
+rule multiqc:
+    input:
+        "trimmed/Id1_AA-rep1.qc.txt"
+    output:
+        "qc/multiqc_report.html"
+    log:
+        "logs/multiqc.log"
+    conda:
+        "envs/multiqc.yaml"
+    shell:
+        """
+        multiqc \
+            --force \
+            --export \
+            --outdir qc \
+            --filename multiqc_report.html \
+            trimmed > {log}
         """
