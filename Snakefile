@@ -1,3 +1,8 @@
+rule all:
+    input:
+        "trimmed/Id1_AA-rep1.1.fastq",
+        "genome/STARINDEX/Genome"
+
 #################################################
 # Skeleton of a rule
 #################################################
@@ -19,4 +24,31 @@ rule generate_genome:
             --genomeDir genome/STARINDEX \
             --genomeSAindexNbases 11 \
             --sjdbOverhang 75
+        """
+
+#################################################
+# rule to remove adaptor sequences: hard coded
+#################################################
+
+rule cutadapt:
+    input:
+        fastq1="reads/Id1_AA-rep1.R1.fastq",
+        fastq2="reads/Id1_AA-rep1.R2.fastq",
+    output:
+        fastq1="trimmed/Id1_AA-rep1.1.fastq",
+        fastq2="trimmed/Id1_AA-rep1.2.fastq",
+        qc="trimmed/Id1_AA-rep1.qc.txt"
+    conda:
+        "envs/trim.yaml"
+    log:
+        "logs/cutadapt/Id1_AA-rep1.log"
+    shell:
+        """
+        cutadapt \
+            -a CTGACCTCAAGTCTGCACACGAGAAGGCTAG \
+            -o {output.fastq1} \
+            -p {output.fastq2} \
+            -j 1 \
+            {input} \
+        > {output.qc}
         """
