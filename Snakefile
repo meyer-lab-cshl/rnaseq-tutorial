@@ -1,6 +1,6 @@
 rule all:
     input:
-        "trimmed/Id1_AA-rep1.1.fastq",
+        "trimmed/Id2_AA-rep2.1.fastq",
         "genome/STARINDEX/Genome",
         "qc/multiqc_report.html"
 
@@ -33,16 +33,16 @@ rule generate_genome:
 
 rule cutadapt:
     input:
-        fastq1="reads/Id1_AA-rep1.R1.fastq",
-        fastq2="reads/Id1_AA-rep1.R2.fastq",
+        fastq1="reads/{sample}-{unit}.R1.fastq",
+        fastq2="reads/{sample}-{unit}.R2.fastq",
     output:
-        fastq1="trimmed/Id1_AA-rep1.1.fastq",
-        fastq2="trimmed/Id1_AA-rep1.2.fastq",
-        qc="trimmed/Id1_AA-rep1.qc.txt"
+        fastq1="trimmed/{sample}-{unit}.1.fastq",
+        fastq2="trimmed/{sample}-{unit}.2.fastq",
+        qc="trimmed/{sample}-{unit}.qc.txt"
     conda:
         "envs/trim.yaml"
     log:
-        "logs/cutadapt/Id1_AA-rep1.log"
+        "logs/cutadapt/{sample}-{unit}.log"
     shell:
         """
         cutadapt \
