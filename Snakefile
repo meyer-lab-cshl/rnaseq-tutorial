@@ -162,7 +162,9 @@ SAMPLESFILE="samples.txt"
 
 rule setup_de:
     input:
-        counts="counts/all.tsv"
+        counts="counts/all.tsv",
+        samples=SAMPLESFILE,
+        annotation="genome/ENSEMBL_GRCh38p13.txt"
     output:
         dds="deseq2/all.rds"
     params:
@@ -172,7 +174,7 @@ rule setup_de:
     conda:
         "envs/deseq2.yaml"
     log:
-        "logs/deseq2/setyp.log"
+        "logs/deseq2/setup.log"
     script:
         "scripts/setup_deseq2.R"
 
