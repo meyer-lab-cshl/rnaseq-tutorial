@@ -11,6 +11,7 @@ rule all:
     input:
         expand("star/{samples.sample}-{samples.unit}.Aligned.sortedByCoord.out.bam",
             samples=samples.itertuples()),
+        "counts/all.tsv",
         "genome/STARINDEX/Genome",
         "qc/multiqc_report.html"
 
@@ -95,6 +96,25 @@ rule align:
             --quantMode GeneCounts \
             --outSAMtype BAM SortedByCoordinate
         """
+
+#################################################
+# Let's put the counts together; script directive
+#################################################
+rule count_matrix:
+    input:
+        expand("star/{samples.sample}-{samples.unit}.ReadsPerGene.out.tab",
+            samples=samples.itertuples())
+    output:
+        "counts/all.tsv"
+    params:
+        samples=samples['sample'].tolist(),
+        strand="reverse"
+    log:
+        "logs/counts/count_matrix.log"
+    conda:
+       "envs/pandas.yaml"
+    script:
+        "scripts/count-matrix.py"
 
 
 #################################################
