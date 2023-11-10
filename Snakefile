@@ -1,6 +1,16 @@
+import pandas as pd
+
+#################################################
+# use sample file to input information
+#################################################
+samplesfile = "samples.txt"
+samples = pd.read_table(samplesfile).set_index(["sample", "unit"], drop=False)
+
+
 rule all:
     input:
-        "trimmed/Id2_AA-rep2.1.fastq",
+        expand("trimmed/{samples.sample}-{samples.unit}.1.fastq",
+            samples=samples.itertuples()),
         "genome/STARINDEX/Genome",
         "qc/multiqc_report.html"
 
