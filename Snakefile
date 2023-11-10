@@ -12,7 +12,6 @@ rule all:
         expand("star/{samples.sample}-{samples.unit}.Aligned.sortedByCoord.out.bam",
             samples=samples.itertuples()),
         "counts/all.tsv",
-        "genome/STARINDEX/Genome",
         "qc/multiqc_report.html"
 
 #################################################
@@ -122,7 +121,8 @@ rule count_matrix:
 #################################################
 rule multiqc:
     input:
-        "trimmed/Id1_AA-rep1.qc.txt"
+        expand("star/{samples.sample}-{samples.unit}.ReadsPerGene.out.tab",
+            samples=samples.itertuples())
     output:
         "qc/multiqc_report.html"
     log:
@@ -136,5 +136,5 @@ rule multiqc:
             --export \
             --outdir qc \
             --filename multiqc_report.html \
-            trimmed > {log}
+            trimmed star > {log}
         """
