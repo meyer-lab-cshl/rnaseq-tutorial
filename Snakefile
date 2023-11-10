@@ -161,6 +161,8 @@ rule count_matrix:
 rule multiqc:
     input:
         expand("star/{samples.sample}-{samples.unit}.ReadsPerGene.out.tab",
+            samples=samples.itertuples()),
+        expand("qc/rseqc/{samples.sample}-{samples.unit}.geneBodyCoverage.txt",
             samples=samples.itertuples())
     output:
         "qc/multiqc_report.html"
@@ -175,5 +177,5 @@ rule multiqc:
             --export \
             --outdir qc \
             --filename multiqc_report.html \
-            trimmed star > {log}
+            trimmed star qc/rseqc > {log}
         """
