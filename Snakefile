@@ -97,6 +97,43 @@ rule align:
         """
 
 #################################################
+# Helper rule for downstream commands: index bam
+#################################################
+rule index:
+    input:
+        "star/{sample}-{unit}.Aligned.sortedByCoord.out.bam",
+    output:
+        "star/{sample}-{unit}.Aligned.sortedByCoord.out.bam.bai",
+    conda:
+        "envs/index.yaml"
+    shell:
+        "samtools index {input}"
+
+#################################################
+# More QC: Gene body coverage
+#################################################
+rule rseqc_coverage:
+    input:
+        bed="genome/human.GRCh38.chr22.bed",
+        bam="star/{sample}-{unit}.Aligned.sortedByCoord.out.bam",
+        bai="star/{sample}-{unit}.Aligned.sortedByCoord.out.bam.bai"
+    output:
+        "qc/rseqc/{sample}-{unit}.geneBodyCoverage.txt"
+    log:
+        "logs/rseqc/rseqc_coverage/{sample}-{unit}.log"
+    conda:
+        "envs/rseqc.yaml"
+    shell:
+        """
+        geneBody_coverage.py \
+            -r {input.bed} \
+            -i {input.bam} \
+            -o qc/rseqc/{wildcards.sample}-{wildcards.unit} 2> {log}
+        """
+
+
+
+#################################################
 # Let's put the counts together; script directive
 #################################################
 rule count_matrix:
@@ -114,6 +151,8 @@ rule count_matrix:
        "envs/pandas.yaml"
     script:
         "scripts/count-matrix.py"
+
+
 
 
 #################################################
