@@ -31,7 +31,7 @@ with the commands yet; we will cover it all in the lectures)
 
 **1. Install a text editor**
 Please make sure you have a text editor installed on your computer; if you do
-not have one, give [Atom](https://atom.io/) a try!
+not have one, give [VS Code](https://code.visualstudio.com/) a try!
 
 **2. Install Miniforge**
 If you do not have it installed already, we first need to install `miniforge` (Manufacturer's instruction here:
@@ -93,7 +93,7 @@ mamba activate snakemake-rnaseq
 ```bash
 snakemake --version
 ```
-You should see: `7.32.4`
+You should see: `8.24.0`
 
 - for those of you on a new Mac (using the Mx chips based on ARM64 architecture), we also need to include this in our set-up
   to ensure all packages can be built properly. You will only have to do this once:
