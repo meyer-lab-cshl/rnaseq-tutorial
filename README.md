@@ -95,15 +95,24 @@ snakemake --version
 ```
 You should see: `8.24.0`
 
-- for those of you on a new Mac (using the Mx chips based on ARM64 architecture), we also need to include this in our set-up
-  to ensure all packages can be built properly. You will only have to do this once:
+- for those of you on a new Mac (using the Mx chips based on ARM64 architecture),
+we also need to include this in our set-up to ensure all packages can be built
+properly. You will only have to do this once:
+
 ```bash
 conda config --env --set subdir osx-64
 ```
 
 **4. Move into the rnaseq-tutorial directory**
+- create a new folder for this tutorial. Do not include spaces in the folder
+name/path,  e.g. do not call the folder ‘RNAseq tutorial’ use ‘rnaseq_tutorial’
+instead.
+- download and unzip the data and scripts from this repository by clicking on
+the green ‘code’ button and selection ‘Download zip’. Alternatively, if you are
+familiar with it, you can clone the repository.
 - enter the directory using the command line `cd /path/2/rnaseq-tutorial`
   (where `path/2/` is the path to the directory where you saved the folder)
+
 
 **5. Test the setup**
 We currently are in a software environment that contains snakemake. We can
