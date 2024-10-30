@@ -6,7 +6,7 @@ samples = pd.read_table(samplesfile).set_index(["sample", "unit"], drop=False)
 
 rule all:
     input:
-        "counts/all.tsv",
+        "deseq2/all.rds",
         "qc/multiqc_report.html"  
 
 ##### rules #####
@@ -109,6 +109,30 @@ rule count_matrix:
     script:
         "scripts/count-matrix.py"
 
+
+#################################################
+# set-up counts analysis
+#################################################
+##### parameters #####
+DESIGN="~ condition"
+SPECIES="human"
+SAMPLESFILE="samples.txt"
+
+rule setup_de:
+    input:
+        counts="counts/all.tsv"
+    output:
+        dds="deseq2/all.rds"
+    params:
+        species=SPECIES,
+        design=DESIGN,
+        samples=SAMPLESFILE
+    conda:
+        "envs/deseq2.yaml"
+    log:
+        "logs/deseq2/setyp.log"
+    script:
+        "scripts/setup_deseq2.R"
 
 
 #################################################
