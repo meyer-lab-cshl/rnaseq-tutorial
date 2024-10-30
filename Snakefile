@@ -6,7 +6,7 @@ samples = pd.read_table(samplesfile).set_index(["sample", "unit"], drop=False)
 
 rule all:
     input:
-        "deseq2/all.rds",
+       # "deseq2/all.rds",
         "qc/multiqc_report.html"  
 
 ##### rules #####
@@ -91,6 +91,43 @@ rule align:
         """
 
 #################################################
+# Helper rule for downstream commands: index bam
+#################################################
+rule index:
+    input:
+        "star/{sample}-{unit}.Aligned.sortedByCoord.out.bam",
+    output:
+        "star/{sample}-{unit}.Aligned.sortedByCoord.out.bam.bai",
+    conda:
+        "envs/index.yaml"
+    shell:
+        "samtools index {input}"
+
+#################################################
+# More QC: Gene body coverage
+#################################################
+rule rseqc_coverage:
+    input:
+        bed="genome/human.GRCh38.chr22.bed",
+        bam="star/{sample}-{unit}.Aligned.sortedByCoord.out.bam",
+        bai="star/{sample}-{unit}.Aligned.sortedByCoord.out.bam.bai"
+    output:
+        "qc/rseqc/{sample}-{unit}.geneBodyCoverage.txt"
+    log:
+        "logs/rseqc/rseqc_coverage/{sample}-{unit}.log"
+    conda:
+        "envs/rseqc.yaml"
+    shell:
+        """
+        geneBody_coverage.py \
+            -r {input.bed} \
+            -i {input.bam} \
+            -o qc/rseqc/{wildcards.sample}-{wildcards.unit} 2> {log}
+        """
+
+
+
+#################################################
 # Let's put the counts together; script directive
 #################################################
 rule count_matrix:
@@ -120,7 +157,8 @@ SAMPLESFILE="samples.txt"
 
 rule setup_de:
     input:
-        counts="counts/all.tsv"
+        counts="counts/all.tsv",
+        annotation="genome/ENSEMBL_GRCh38p13.txt"
     output:
         dds="deseq2/all.rds"
     params:
@@ -155,5 +193,5 @@ rule multiqc:
             --export \
             --outdir qc \
             --filename multiqc_report.html \
-            trimmed star > {log}
+            trimmed star qc/rseqc > {log}
         """
