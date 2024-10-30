@@ -5,6 +5,7 @@
 scripts/.snakemake*
 !scripts
 !Snakefile
+!cooking.smk
 !config.yaml
 !samples.txt
 !envs
