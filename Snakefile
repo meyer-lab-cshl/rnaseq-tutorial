@@ -2,11 +2,11 @@ import pandas as pd
 
 samplesfile = "samples.txt"
 samples = pd.read_table(samplesfile).set_index(["sample", "unit"], drop=False)
-print(samples)
+#print(samples)
 
 rule all:
     input:
-        expand("trimmed/{samples.sample}-{samples.unit}.1.fastq",
+        expand("star/{samples.sample}-{samples.unit}.Aligned.sortedByCoord.out.bam",
             samples=samples.itertuples()),
         "qc/multiqc_report.html"  
 
