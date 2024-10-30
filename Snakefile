@@ -1,9 +1,13 @@
-#################################################
-# Skeleton of a rule
-#################################################
+import pandas as pd
+
+samplesfile = "samples.txt"
+samples = pd.read_table(samplesfile).set_index(["sample", "unit"], drop=False)
+print(samples)
+
 rule all:
     input:
-        "trimmed/Id1_AA-rep1.1.fastq",
+        expand("trimmed/{samples.sample}-{samples.unit}.1.fastq",
+            samples=samples.itertuples())
 
 ##### rules #####
 rule generate_genome:
@@ -32,16 +36,16 @@ rule generate_genome:
         """
 rule cutadapt:
     input:
-        fastq1="reads/Id1_AA-rep1.R1.fastq",
-        fastq2="reads/Id1_AA-rep1.R2.fastq",
+        fastq1="reads/{sample}-{unit}.R1.fastq",
+        fastq2="reads/{sample}-{unit}.R2.fastq",
     output:
-        fastq1="trimmed/Id1_AA-rep1.1.fastq",
-        fastq2="trimmed/Id1_AA-rep1.2.fastq",
-        qc="trimmed/Id1_AA-rep1.qc.txt"
+        fastq1="trimmed/{sample}-{unit}.1.fastq",
+        fastq2="trimmed/{sample}-{unit}.2.fastq",
+        qc="trimmed/{sample}-{unit}.qc.txt"
     conda:
         "envs/trim.yaml"
     log:
-        "logs/cutadapt/Id1_AA-rep1.log"
+        "logs/cutadapt/{sample}-{unit}.log"
     shell:
         """
         cutadapt \
