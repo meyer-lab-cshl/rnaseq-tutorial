@@ -35,6 +35,7 @@ rule generate_genome:
             --genomeSAindexNbases {params.Nbases} \
             --sjdbOverhang {params.length}
         """
+
 rule cutadapt:
     input:
         fastq1="reads/{sample}-{unit}.R1.fastq",
@@ -57,6 +58,40 @@ rule cutadapt:
             {input} \
         > {output.qc}
         """
+
+#################################################
+# Align reads with STAR, BAM as output
+#################################################
+
+rule align:
+    input:
+        fastq1="trimmed/{sample}-{unit}.1.fastq",
+        fastq2="trimmed/{sample}-{unit}.2.fastq",
+        gtf="genome/human.GRCh38.chr22.gtf",
+        genome="genome/STARINDEX/Genome"
+    output:
+        "star/{sample}-{unit}.Aligned.sortedByCoord.out.bam",
+        "star/{sample}-{unit}.ReadsPerGene.out.tab"
+    log:
+        "logs/star/{sample}-{unit}.log"
+    params:
+        indexdir="genome/STARINDEX"
+    threads: 4
+    conda:
+        "envs/align.yaml"
+    shell:
+        """
+        STAR \
+            --runMode alignReads \
+            --runThreadN {threads} \
+            --genomeDir {params.indexdir} \
+            --readFilesIn {input.fastq1} {input.fastq2} \
+            --outFileNamePrefix star/{wildcards.sample}-{wildcards.unit}. \
+            --quantMode GeneCounts \
+            --outSAMtype BAM SortedByCoordinate
+        """
+
+
 
 #################################################
 # multi qc to visualise results of trim
