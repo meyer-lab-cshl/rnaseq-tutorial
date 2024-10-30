@@ -178,7 +178,7 @@ rule setup_de:
 #################################################
 rule multiqc:
     input:
-        expand("qc/rseq/{samples.sample}-{samples.unit}.geneBodyCoverage.txt",
+        expand("qc/rseqc/{samples.sample}-{samples.unit}.geneBodyCoverage.txt",
             samples=samples.itertuples())
     output:
         "qc/multiqc_report.html"
