@@ -1,13 +1,20 @@
 import pandas as pd
 
-samplesfile = "samples.txt"
-samples = pd.read_table(samplesfile).set_index(["sample", "unit"], drop=False)
-#print(samples)
+# set up - these will ultimately be in a config file
+SAMPLESFILE="samples.txt"
+DESIGN="~ condition"
+SPECIES="human"
+CONTRAST="AA_vs_control"
+
+samples = pd.read_table(SAMPLESFILE).set_index(["sample", "unit"], drop=False)
+
 
 rule all:
     input:
-       # "deseq2/all.rds",
-        "qc/multiqc_report.html"  
+        expand(["results/diffexp/{contrast}.diffexp.txt",
+                "results/diffexp/{contrast}.ma-plot.pdf"],
+               contrast=CONTRAST),
+        "qc/multiqc_report.html",
 
 ##### rules #####
 rule generate_genome:
@@ -150,28 +157,47 @@ rule count_matrix:
 #################################################
 # set-up counts analysis
 #################################################
-##### parameters #####
-DESIGN="~ condition"
-SPECIES="human"
-SAMPLESFILE="samples.txt"
 
 rule setup_de:
     input:
         counts="counts/all.tsv",
-        annotation="genome/ENSEMBL_GRCh38p13.txt"
+        annotation="genome/ENSEMBL_GRCh38p13.txt",
+        samples=SAMPLESFILE
     output:
         dds="deseq2/all.rds"
     params:
         species=SPECIES,
         design=DESIGN,
+    conda:
+        "envs/deseq2.yaml"
+    log:
+        "logs/deseq2/setup.log"
+    script:
+        "scripts/setup_deseq2.R"
+
+
+#################################################
+# DESeq2
+#################################################
+
+rule deseq2:
+    input:
+        dds="deseq2/all.rds",
+    output:
+        table="results/diffexp/{contrast}.diffexp.txt",
+        ma_plot="results/diffexp/{contrast}.ma-plot.pdf",
+        up="results/diffexp/deg-sig-up_{contrast}.csv",
+        down="results/diffexp/deg-sig-down_{contrast}.csv"
+    params:
+        contrast=['AA', 'control'],
+        design=DESIGN,
         samples=SAMPLESFILE
     conda:
         "envs/deseq2.yaml"
     log:
-        "logs/deseq2/setyp.log"
+        "logs/deseq2/{contrast}.diffexp.log"
     script:
-        "scripts/setup_deseq2.R"
-
+        "scripts/deseq2.R"
 
 #################################################
 # multi qc to visualise results of trim
