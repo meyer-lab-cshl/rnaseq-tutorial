@@ -62,7 +62,7 @@ Following the recommodations by the
 we will then set-up our snakemake environment:
 
 ```bash
-mamba create -c conda-forge -c bioconda -n snakemake-rnaseq snakemake
+mamba create -c conda-forge -c bioconda -c nodefaults -n snakemake snakemake
 ```
 mamba will check all packages and dependencies required to install snakemake and will
 print these to the command line. 
@@ -93,7 +93,7 @@ mamba activate snakemake-rnaseq
 ```bash
 snakemake --version
 ```
-You should see: `8.24.0`
+You should see: `9.11.6`
 
 - for those of you on a new Mac (using the Mx chips based on ARM64 architecture),
 we also need to include this in our set-up to ensure all packages can be built
