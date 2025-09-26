@@ -127,7 +127,7 @@ and use them to write some dummy text. If that works, we know we will not have
 software related issues during the lecture and can instead focus on the
 analysis, so let's do that!
 
-- type: `snakemake --use-conda --cores 1`
+- type: `snakemake --use-conda --cores 1 -s setup.smk`
 - hit enter
 - you should see something like this on your screen:
 ```
