@@ -62,7 +62,7 @@ Following the recommodations by the
 we will then set-up our snakemake environment:
 
 ```bash
-mamba create -c conda-forge -c bioconda -c nodefaults -n snakemake snakemake
+mamba create -c conda-forge -c bioconda -c nodefaults -n snakemake-rnaseq snakemake
 ```
 mamba will check all packages and dependencies required to install snakemake and will
 print these to the command line. 
