@@ -11,7 +11,8 @@ def get_fastq(wildcards):
 rule all:
     input:
         expand("trimmed/{samples.sample}-{samples.unit}.R1.fastq",
-            samples=samples.itertuples())
+            samples=samples.itertuples()),
+        "qc/multiqc_report.html"
 
 
 
@@ -62,4 +63,24 @@ rule cutadapt:
             -j {threads} \
             {input} \
         > {output.qc}
+        """
+
+rule multiqc:
+    input:
+        expand("trimmed/{samples.sample}-{samples.unit}.qc.txt",
+            samples=samples.itertuples())
+    output:
+        "qc/multiqc_report.html"
+    log:
+        "logs/multiqc.log"
+    conda:
+        "envs/multiqc.yaml"
+    shell:
+        """
+        multiqc \
+            --force \
+            --export \
+            --outdir qc \
+            --filename multiqc_report.html \
+            trimmed > {log}
         """
