@@ -2,10 +2,10 @@ channels:
   - conda-forge
   - bioconda
 dependencies:
-  - r-base=4.3.1
-  - r-tidyverse=2.0.0
-  - r-cowplot=1.1.1
-  - r-svglite=2.1.2
-  - bioconductor-deseq2=1.40.2
-  - bioconductor-biomart=2.56.1
-  - bioconductor-apeglm=1.22.1
+  - r-base
+  - r-tidyverse
+  - r-cowplot
+  - r-svglite
+  - bioconductor-deseq2
+  - bioconductor-biomart
+  - bioconductor-apeglm

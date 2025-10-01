@@ -16,7 +16,7 @@ the pipeline, evaluate your results and learn how to generate an analysis report
 
 ## Directory structure
 The files you see in this directory are either part of the pipeline
-([Snakefile](Snakefile),[scripts](scripts), [envs](envs)), or contain the example
+([scripts](scripts), [envs](envs)), or contain the example
 data to run the analysis ([genome](genome), [reads](reads),
 [samples.txt](samples.txt)).
 
@@ -62,7 +62,7 @@ Following the recommodations by the
 we will then set-up our snakemake environment:
 
 ```bash
-mamba create -c conda-forge -c bioconda -c nodefaults -n snakemake snakemake
+mamba create -c conda-forge -c bioconda -c nodefaults -n snakemake-rnaseq snakemake
 ```
 mamba will check all packages and dependencies required to install snakemake and will
 print these to the command line. 
