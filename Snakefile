@@ -12,6 +12,7 @@ rule all:
     input:
         expand("star/{samples.sample}-{samples.unit}.Aligned.sortedByCoord.out.bam",
             samples=samples.itertuples()),
+        "counts/all.tsv",
         "qc/multiqc_report.html"
 
 
@@ -93,6 +94,22 @@ rule align:
             --quantMode GeneCounts \
             --outSAMtype BAM SortedByCoordinate
         """
+
+rule count_matrix:
+    input:
+        expand("star/{samples.sample}-{samples.unit}.ReadsPerGene.out.tab",
+            samples=samples.itertuples())
+    output:
+        "counts/all.tsv"
+    params:
+        samples=samples['sample'].tolist(),
+        strand="reverse"
+    log:
+        "logs/counts/count_matrix.log"
+    conda:
+       "envs/pandas.yaml"
+    script:
+        "scripts/count-matrix.py"
 
 rule multiqc:
     input:
