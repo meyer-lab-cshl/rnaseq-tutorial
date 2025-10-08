@@ -65,6 +65,34 @@ rule cutadapt:
         > {output.qc}
         """
 
+rule align:
+    input:
+        fastq1="trimmed/{sample}-{unit}.R1.fastq",
+        fastq2="trimmed/{sample}-{unit}.R2.fastq",
+        gtf="genome/human.GRCh38.chr22.gtf",
+        genome="genome/STARINDEX/Genome"
+    output:
+        "star/{sample}-{unit}.Aligned.out.sam",
+        "star/{sample}-{unit}.ReadsPerGene.out.tab"
+    log:
+        "logs/star/{sample}-{unit}.log"
+    params:
+        indexdir="genome/STARINDEX"
+    threads: 4
+    conda:
+        "envs/align.yaml"
+    shell:
+        """
+        STAR \
+            --runMode alignReads \
+            --runThreadN {threads} \
+            --genomeDir {params.indexdir} \
+            --readFilesIn {input.fastq1} {input.fastq2} \
+            --outFileNamePrefix star/{wildcards.sample}-{wildcards.unit}. \
+            --quantMode GeneCounts \
+            --outSAMtype SAM
+        """
+
 rule multiqc:
     input:
         expand("trimmed/{samples.sample}-{samples.unit}.qc.txt",
