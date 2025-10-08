@@ -91,7 +91,7 @@ rule align:
             --outFileNamePrefix star/{wildcards.sample}-{wildcards.unit}. \
             --sjdbGTFfile {input.gtf} \
             --quantMode GeneCounts \
-            --outSAMtype BAM SortedbyCoordinate
+            --outSAMtype BAM SortedByCoordinate
         """
 
 rule multiqc:
