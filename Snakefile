@@ -1,7 +1,14 @@
 import pandas as pd
-samplesfile = "samples.txt"
-samples = pd.read_table(samplesfile).set_index(["sample", "unit"], drop=False)
+
+##### data ####
+DESIGN="~ condition"
+SPECIES="human"
+SAMPLESFILE="samples.txt"
+
+samples = pd.read_table(SAMPLESFILE).set_index(["sample", "unit"], drop=False)
 print(samples.loc[('Id1_AA', 'rep1'), ["fq1", "fq2"]].dropna())
+
+
 ##### functions ####
 def get_fastq(wildcards):
     return samples.loc[(wildcards.sample, wildcards.unit), ["fq1", "fq2"]].dropna()
@@ -12,7 +19,9 @@ rule all:
     input:
         expand("star/{samples.sample}-{samples.unit}.Aligned.sortedByCoord.out.bam",
             samples=samples.itertuples()),
-        "counts/all.tsv",
+        expand(["results/diffexp/{contrast}.diffexp.txt",
+                "results/diffexp/{contrast}.ma-plot.pdf"],
+               contrast=['AA', 'control']),
         "qc/multiqc_report.html"
 
 
@@ -110,6 +119,44 @@ rule count_matrix:
        "envs/pandas.yaml"
     script:
         "scripts/count-matrix.py"
+
+
+rule setup_de:
+    input:
+        counts="counts/all.tsv",
+        annotation="genome/ENSEMBL_GRCh38p13.txt",
+        samples=SAMPLESFILE
+    output:
+        dds="deseq2/all.rds"
+    params:
+        species=SPECIES,
+        design=DESIGN,
+    conda:
+        "envs/deseq2.yaml"
+    log:
+        "logs/deseq2/setup.log"
+    script:
+        "scripts/setup_deseq2.R"
+
+
+rule deseq2:
+    input:
+        dds="deseq2/all.rds",
+    output:
+        table="results/diffexp/{contrast}.diffexp.txt",
+        ma_plot="results/diffexp/{contrast}.ma-plot.pdf",
+        up="results/diffexp/deg-sig-up_{contrast}.csv",
+        down="results/diffexp/deg-sig-down_{contrast}.csv"
+    params:
+        contrast=['AA', 'control'],
+        design=DESIGN,
+        samples=SAMPLESFILE
+    conda:
+        "envs/deseq2.yaml"
+    log:
+        "logs/deseq2/{contrast}.diffexp.log"
+    script:
+        "scripts/deseq2.R"
 
 rule multiqc:
     input:
