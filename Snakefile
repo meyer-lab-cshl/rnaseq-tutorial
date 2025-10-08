@@ -12,6 +12,7 @@ rule all:
     input:
         expand("trimmed/{samples.sample}-{samples.unit}.R1.fastq",
             samples=samples.itertuples()),
+        "star/Id3_control-rep1.Aligned.out.sam",
         "qc/multiqc_report.html"
 
 
@@ -89,6 +90,7 @@ rule align:
             --genomeDir {params.indexdir} \
             --readFilesIn {input.fastq1} {input.fastq2} \
             --outFileNamePrefix star/{wildcards.sample}-{wildcards.unit}. \
+            --sjdbGTFfile {input.gtf} \
             --quantMode GeneCounts \
             --outSAMtype SAM
         """
