@@ -1,13 +1,12 @@
 import pandas as pd
 
 ##### data ####
+# parameters that would ultimately go into a config file
 DESIGN="~ condition"
 SPECIES="human"
 SAMPLESFILE="samples.txt"
 
 samples = pd.read_table(SAMPLESFILE).set_index(["sample", "unit"], drop=False)
-print(samples.loc[('Id1_AA', 'rep1'), ["fq1", "fq2"]].dropna())
-
 
 ##### functions ####
 def get_fastq(wildcards):
@@ -19,12 +18,9 @@ rule all:
     input:
         expand("star/{samples.sample}-{samples.unit}.Aligned.sortedByCoord.out.bam",
             samples=samples.itertuples()),
-        expand(["results/diffexp/{contrast}.diffexp.txt",
-                "results/diffexp/{contrast}.ma-plot.pdf"],
-               contrast=['AA', 'control']),
+        expand("results/diffexp/{contrast}.diffexp.txt",
+               contrast="AA_vs_control"),
         "qc/multiqc_report.html"
-
-
 
 rule generate_genome:
     input:
@@ -148,7 +144,6 @@ rule deseq2:
         up="results/diffexp/deg-sig-up_{contrast}.csv",
         down="results/diffexp/deg-sig-down_{contrast}.csv"
     params:
-        contrast=['AA', 'control'],
         design=DESIGN,
         samples=SAMPLESFILE
     conda:
