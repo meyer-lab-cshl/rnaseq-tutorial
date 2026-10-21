@@ -93,7 +93,7 @@ mamba activate snakemake-rnaseq
 ```bash
 snakemake --version
 ```
-You should see: `9.11.6`
+You should see: `9.27.1`
 
 - for those of you on a new Mac (using the Mx chips based on ARM64 architecture),
 we also need to include this in our set-up to ensure all packages can be built
