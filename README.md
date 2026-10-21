@@ -100,7 +100,7 @@ we also need to include this in our set-up to ensure all packages can be built
 properly. You will only have to do this once:
 
 ```bash
-conda config --env --set subdir osx-64
+conda config --set subdir osx-64
 ```
 
 **4. Move into the rnaseq-tutorial directory**
