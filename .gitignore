@@ -16,3 +16,6 @@
 !Homework.md
 !reads
 !.gitignore
+!Dockerfile
+!.dockerignore
+!.devcontainer/**
