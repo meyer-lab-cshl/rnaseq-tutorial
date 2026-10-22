@@ -1,6 +1,16 @@
+import pandas as pd
+
+samplesfile = "samples.txt"
+samples = pd.read_table(samplesfile).set_index(["sample", "unit"], drop=False)
+print(samples.loc[('Id1_AA', 'rep1'), ["fq1", "fq2"]].dropna())
+
+
+
+
 rule all:
     input:
-        "trimmed/Id1_AA-rep1.R1.fastq",
+        expand("trimmed/{samples.sample}-{samples.unit}.R1.fastq",
+            samples=samples.itertuples()),
         "genome/STARINDEX/Genome"
 
 rule generate_genome:
@@ -23,18 +33,21 @@ rule generate_genome:
             --sjdbOverhang 75
         """
 
+def get_fastq(wildcards):
+    return samples.loc[(wildcards.sample, wildcards.unit), ["fq1", "fq2"]].dropna()
+
+
 rule cutadapt:
     input:
-        fastq1="reads/Id1_AA-rep1.R1.fastq",
-        fastq2="reads/Id1_AA-rep1.R2.fastq",
+        get_fastq
     output:
-        fastq1="trimmed/Id1_AA-rep1.R1.fastq",
-        fastq2="trimmed/Id1_AA-rep1.R2.fastq",
-        qc="trimmed/Id1_AA-rep1.qc.txt"
+        fastq1="trimmed/{sample}-{unit}.R1.fastq",
+        fastq2="trimmed/{sample}-{unit}.R2.fastq",
+        qc="trimmed/{sample}-{unit}.qc.txt"
     conda:
         "envs/trim.yaml"
     log:
-        "logs/cutadapt/Id1_AA-rep1.log"
+        "logs/cutadapt/{sample}-{unit}.log"
     shell:
         """
         cutadapt \
