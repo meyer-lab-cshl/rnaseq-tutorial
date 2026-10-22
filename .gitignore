@@ -19,3 +19,4 @@
 !Dockerfile
 !.dockerignore
 !.devcontainer/**
+!docker.md
