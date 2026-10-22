@@ -1,6 +1,8 @@
-#################################################
-# Skeleton of a rule
-#################################################
+rule all:
+    input:
+        "trimmed/Id1_AA-rep1.R1.fastq",
+        "genome/STARINDEX/Genome"
+
 rule generate_genome:
     input:
         genome="genome/human.GRCh38.chr22.fasta",
