@@ -1,0 +1,12 @@
+{
+  "name": "rnaseq-tutorial",
+  "build": { "dockerfile": "../Dockerfile", "context": ".." },
+  "workspaceFolder": "/work",
+  "workspaceMount":
+    "source=${localWorkspaceFolder},target=/work,type=bind",
+  "customizations": {
+    "vscode": {
+      "extensions": ["snakemake.snakemake-lang", "REditorSupport.r"]
+    }
+  }
+}
