@@ -1,11 +1,15 @@
 import pandas as pd
 
+## set up data ####
 samplesfile = "samples.txt"
 samples = pd.read_table(samplesfile).set_index(["sample", "unit"], drop=False)
-print(samples.loc[('Id1_AA', 'rep1'), ["fq1", "fq2"]].dropna())
+#print(samples.loc[('Id1_AA', 'rep1'), ["fq1", "fq2"]].dropna())
 
+## functions ####
+def get_fastq(wildcards):
+    return samples.loc[(wildcards.sample, wildcards.unit), ["fq1", "fq2"]].dropna()
 
-
+## rules ####
 
 rule all:
     input:
@@ -21,21 +25,21 @@ rule generate_genome:
         "genome/STARINDEX/Genome"
     conda:
         "envs/align.yaml"
+    params:
+        length=75,
+        Nbases=11
+    threads: 1
     shell:
         """
         STAR \
             --runMode genomeGenerate \
-            --runThreadN 1 \
+            --runThreadN {threads} \
             --genomeFastaFiles {input.genome} \
             --sjdbGTFfile {input.gtf} \
             --genomeDir genome/STARINDEX \
-            --genomeSAindexNbases 11 \
-            --sjdbOverhang 75
+            --genomeSAindexNbases {params.Nbases} \
+            --sjdbOverhang {params.length}
         """
-
-def get_fastq(wildcards):
-    return samples.loc[(wildcards.sample, wildcards.unit), ["fq1", "fq2"]].dropna()
-
 
 rule cutadapt:
     input:
@@ -48,13 +52,16 @@ rule cutadapt:
         "envs/trim.yaml"
     log:
         "logs/cutadapt/{sample}-{unit}.log"
+    params:
+        adapters="CTGACCTCAAGTCTGCACACGAGAAGGCTAG",
+    threads: 1
     shell:
         """
         cutadapt \
-            -a CTGACCTCAAGTCTGCACACGAGAAGGCTAG \
+            -a {params.adapters} \
             -o {output.fastq1} \
             -p {output.fastq2} \
-            -j 1 \
+            -j {threads} \
             {input} \
         > {output.qc}
         """
