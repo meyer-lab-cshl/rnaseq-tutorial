@@ -15,7 +15,8 @@ rule all:
     input:
         expand("trimmed/{samples.sample}-{samples.unit}.R1.fastq",
             samples=samples.itertuples()),
-        "genome/STARINDEX/Genome"
+        "genome/STARINDEX/Genome",
+        "qc/multiqc_report.html"
 
 rule generate_genome:
     input:
@@ -64,4 +65,24 @@ rule cutadapt:
             -j {threads} \
             {input} \
         > {output.qc}
+        """
+
+rule multiqc:
+    input:
+        expand("trimmed/{samples.sample}-{samples.unit}.qc.txt",
+            samples=samples.itertuples())
+    output:
+        "qc/multiqc_report.html"
+    log:
+        "logs/multiqc.log"
+    conda:
+        "envs/multiqc.yaml"
+    shell:
+        """
+        multiqc \
+            --force \
+            --export \
+            --outdir qc \
+            --filename multiqc_report.html \
+            trimmed > {log}
         """
