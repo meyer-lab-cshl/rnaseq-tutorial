@@ -15,6 +15,9 @@ rule all:
     input:
         expand("star/{samples.sample}-{samples.unit}.Aligned.sortedByCoord.out.bam",
             samples=samples.itertuples()),
+        expand(["results/diffexp/{contrast}.diffexp.txt",
+                "results/diffexp/{contrast}.ma-plot.pdf"],
+               contrast="AA_vs_control"),
         "qc/multiqc_report.html"
 
 rule generate_genome:
@@ -141,6 +144,46 @@ rule count_matrix:
         "scripts/count-matrix.py"
 
 
+##### parameters #####
+DESIGN="~ condition"
+SPECIES="human"
+SAMPLESFILE="samples.txt"
+
+rule setup_de:
+    input:
+        counts="counts/all.tsv",
+        annotation="genome/ENSEMBL_GRCh38p13.txt",
+        samples=SAMPLESFILE
+    output:
+        dds="deseq2/all.rds"
+    params:
+        species=SPECIES,
+        design=DESIGN,
+    conda:
+        "envs/deseq2.yaml"
+    log:
+        "logs/deseq2/setup.log"
+    script:
+        "scripts/setup_deseq2.R"
+
+rule deseq2:
+    input:
+        dds="deseq2/all.rds",
+    output:
+        table="results/diffexp/{contrast}.diffexp.txt",
+        ma_plot="results/diffexp/{contrast}.ma-plot.pdf",
+        up="results/diffexp/deg-sig-up_{contrast}.csv",
+        down="results/diffexp/deg-sig-down_{contrast}.csv"
+    params:
+        contrast=['AA', 'control'],
+        design=DESIGN,
+        samples=SAMPLESFILE
+    conda:
+        "envs/deseq2.yaml"
+    log:
+        "logs/deseq2/{contrast}.diffexp.log"
+    script:
+        "scripts/deseq2.R"
 
 
 rule multiqc:
