@@ -99,7 +99,7 @@ rule multiqc:
     input:
         expand("trimmed/{samples.sample}-{samples.unit}.qc.txt",
             samples=samples.itertuples()),
-        expand("star/{samples.sample}-{samples.unit}.Aligned.SortedByCoordinate.out.bam",
+        expand("star/{samples.sample}-{samples.unit}.Aligned.sortedByCoord.out.bam",
             samples=samples.itertuples())
     output:
         "qc/multiqc_report.html"
