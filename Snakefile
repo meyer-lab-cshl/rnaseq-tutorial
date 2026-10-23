@@ -66,25 +66,6 @@ rule cutadapt:
         > {output.qc}
         """
 
-rule multiqc:
-    input:
-        expand("trimmed/{samples.sample}-{samples.unit}.qc.txt",
-            samples=samples.itertuples())
-    output:
-        "qc/multiqc_report.html"
-    log:
-        "logs/multiqc.log"
-    conda:
-        "envs/multiqc.yaml"
-    shell:
-        """
-        multiqc \
-            --force \
-            --export \
-            --outdir qc \
-            --filename multiqc_report.html \
-            trimmed > {log}
-        """
 
 rule align:
     input:
@@ -112,4 +93,26 @@ rule align:
             --outFileNamePrefix star/{wildcards.sample}-{wildcards.unit}. \
             --quantMode GeneCounts \
             --outSAMtype BAM SortedByCoordinate
+        """
+
+rule multiqc:
+    input:
+        expand("trimmed/{samples.sample}-{samples.unit}.qc.txt",
+            samples=samples.itertuples()),
+        expand("star/{samples.sample}-{samples.unit}.Aligned.SortedByCoordinate.out.bam",
+            samples=samples.itertuples())
+    output:
+        "qc/multiqc_report.html"
+    log:
+        "logs/multiqc.log"
+    conda:
+        "envs/multiqc.yaml"
+    shell:
+        """
+        multiqc \
+            --force \
+            --export \
+            --outdir qc \
+            --filename multiqc_report.html \
+            trimmed star > {log}
         """
