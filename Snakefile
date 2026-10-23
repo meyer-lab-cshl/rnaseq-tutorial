@@ -118,7 +118,7 @@ rule rseqc_coverage:
         "envs/rseqc.yaml"
     shell:
         """
-       :x
+        geneBody_coverage.py \
             -r {input.bed} \
             -i {input.bam} \
             -o qc/rseqc/{wildcards.sample}-{wildcards.unit} 2> {log}
