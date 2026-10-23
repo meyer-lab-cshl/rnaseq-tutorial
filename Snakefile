@@ -124,6 +124,25 @@ rule rseqc_coverage:
             -o qc/rseqc/{wildcards.sample}-{wildcards.unit} 2> {log}
         """
 
+rule count_matrix:
+    input:
+        expand("star/{samples.sample}-{samples.unit}.ReadsPerGene.out.tab",
+            samples=samples.itertuples())
+    output:
+        "counts/all.tsv"
+    params:
+        samples=samples['sample'].tolist(),
+        strand="reverse"
+    log:
+        "logs/counts/count_matrix.log"
+    conda:
+       "envs/pandas.yaml"
+    script:
+        "scripts/count-matrix.py"
+
+
+
+
 rule multiqc:
     input:
         expand("qc/rseqc/{samples.sample}-{samples.unit}.geneBodyCoverage.txt",
@@ -141,5 +160,5 @@ rule multiqc:
             --export \
             --outdir qc \
             --filename multiqc_report.html \
-            trimmed star qc/rseq > {log}
+            trimmed star qc/rseqc > {log}
         """
