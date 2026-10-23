@@ -13,9 +13,8 @@ def get_fastq(wildcards):
 
 rule all:
     input:
-        expand("trimmed/{samples.sample}-{samples.unit}.R1.fastq",
+        expand("star/{samples.sample}-{samples.unit}.Aligned.sortedByCoord.out.bam",
             samples=samples.itertuples()),
-        "genome/STARINDEX/Genome",
         "qc/multiqc_report.html"
 
 rule generate_genome:
@@ -94,7 +93,7 @@ rule align:
         gtf="genome/human.GRCh38.chr22.gtf",
         genome="genome/STARINDEX/Genome"
     output:
-        "star/{sample}-{unit}.Aligned.out.sam",
+        "star/{sample}-{unit}.Aligned.sortedByCoord.out.bam",
         "star/{sample}-{unit}.ReadsPerGene.out.tab"
     log:
         "logs/star/{sample}-{unit}.log"
@@ -112,5 +111,5 @@ rule align:
             --readFilesIn {input.fastq1} {input.fastq2} \
             --outFileNamePrefix star/{wildcards.sample}-{wildcards.unit}. \
             --quantMode GeneCounts \
-            --outSAMtype SAM
+            --outSAMtype BAM SortedByCoordinate
         """
